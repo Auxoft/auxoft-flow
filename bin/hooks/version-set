@@ -1,0 +1,13 @@
+#!/bin/sh
+
+
+# set app version:
+#   first param   - a.b.c.d - app version             example:  0.2.1.4
+#   second param  - version_name - app version name   example:  alpha, beta, public_beta
+#
+#  example: 
+#   > ./version-set 0.2.26.1 beta
+
+
+echo $1 > "./current.version"
+echo $2 >> "./current.version"

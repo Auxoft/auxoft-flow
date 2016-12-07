@@ -178,7 +178,7 @@ af_load_settings() {
 
 af_load_version() {
   declare -a versions
-  versions=( `cat "./build/current.version"`)
+  versions=( `$AF_DIR/hooks/version-get` )
 
   export VERSION=${versions[0]}
   export VERSION_NAME=${versions[1]}
@@ -207,9 +207,7 @@ af_load_version() {
 }
 
 af_update_version() {
-  echo $1 > "./build/current.version"
-  echo $2 >> "./build/current.version"
-  echo "" >> "./build/current.version"
+  $AF_DIR/hooks/version-set $@
 }
 
 #

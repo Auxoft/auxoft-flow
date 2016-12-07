@@ -1,0 +1,19 @@
+#!/bin/sh
+
+
+# get app version, return 2 values separate by space:
+#   - a.b.c.d - app version             example:  0.2.1.4
+#   - version_name - app version name   example:  alpha, beta, public_beta
+#
+#  example:
+#   > ./version-get
+#    0.2.26.1 beta
+#
+
+
+if [ ! -e "./current.version" ]; then
+  echo "0.0.0.0"     >  ./current.version
+  echo ""            >> ./current.version
+fi
+
+echo `cat "./current.version"`
