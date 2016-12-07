@@ -204,6 +204,93 @@ af_load_version() {
   else
     export VERSION_D="0"
   fi
+
+#   if    [[ $branch_prefix == $master_branch ]]; then
+#   echo "it's master branch"
+
+#   build_type="devbuild"
+#   short_version=$version
+#   subversion=""
+
+# elif  [[ $branch_prefix == $feature_prefix ]]; then
+#   echo "it's feature/* branch"
+
+#   build_type="featurebuild"
+#   short_version=$version
+#   subversion=""
+
+# elif  [[ $branch_prefix == $hotfix_prefix ]]; then
+#   echo "it's hotfix/* branch"
+
+#   build_type="hotfixbuild"
+#   short_version=$version
+#   subversion=""
+
+# elif  [[ $branch_prefix == $release_prefix ]]; then
+#   echo "it's release/* branch:"
+
+#   build_type="releasebuild"
+#   short_version=$version
+#   subversion=""
+
+# elif  [[ $branch_prefix == $nightbuild_prefix ]]; then
+#   echo "it's nightbuild/* branch:"
+
+#   build_type="nightbuild"
+#   short_version=$version
+#   subversion="-nb$version_c.$version_d"
+
+# elif  [[ $branch_prefix == $sprintbuild_prefix ]]; then
+#   echo "it's sprintbuild/* branch:"
+
+#   build_type="sprint"
+#   short_version=$version
+#   subversion="-sp$(($version_c - 1))"
+
+# elif  [[ $branch_prefix == $rcbuild_prefix ]]; then
+#   echo "it's rcbuild/* branch:"
+
+#   build_type="rcbuild"
+#   short_version=$version
+#   subversion="-rc$version_d"
+
+# elif  [[ $branch_prefix == $patchbuild_prefix ]]; then
+#   echo "it's patchbuild/* branch:"
+
+#   build_type="patchbuild"
+#   short_version=$version
+#   subversion="-patch$version_d"
+
+# elif  [[ $branch_prefix == $releasebuild_prefix ]]; then
+#   echo "it's releasebuild/* branch:"
+
+#   build_type="releasebuild"
+#   short_version="$version_a.$version_b.$version_c"
+#   subversion=""
+
+# fi
+
+# if [[ $subversion == "" ]]; then
+#   middle_version=$short_version
+# else
+#   middle_version=$short_version$subversion
+# fi
+
+# if [[ $version_name == "" ]]; then
+#   full_version=$middle_version
+# else
+#   full_version=$middle_version"+"$version_name
+# fi
+
+  VERSION_SHORT="0.0.0.0"
+  VERSION_LONG="0.0.0.0-nb0.0+alpha"
+  VERSION_TYPE="night"
+
+# # echo short_version: $short_version
+# # echo middle_version: $middle_version
+# # echo full_version: $full_version
+# # echo build_type: $build_type
+
 }
 
 af_update_version() {
