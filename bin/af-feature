@@ -62,27 +62,28 @@ cmd_finish() {
   require_clean_working_tree
   require_current_branch_prefix $FEATURE_PREFIX
 
-  $AF_DIR/hooks/build-check "$VERSION_SHORT" "$VERSION_NAME" "$VERSION_TYPE" "$VERSION_LONG"
+  $AF_DIR/hooks/build-check "$VERSION_SHORT" "$VERSION_NAME" "$VERSION_TYPE" "$VERSION_LONG" || \
+    die "There were checked build problem."
 
-  if has "$ORIGIN/$MASTER_BRANCH" $(git_remote_branches); then
-    require_branches_equal "$MASTER_BRANCH" "$ORIGIN/$MASTER_BRANCH"
-  fi
+  # if has "$ORIGIN/$MASTER_BRANCH" $(git_remote_branches); then
+  #   require_branches_equal "$MASTER_BRANCH" "$ORIGIN/$MASTER_BRANCH"
+  # fi
 
-  if ! git_is_branch_merged_into "$FEATURE_BRANCH" "$MASTER_BRANCH"; then
-    git_do merge --no-ff "$MASTER_BRANCH" -m "### marge from $MASTER_BRANCH into $FEATURE_BRANCH" || \
-      die "There were merge conflicts."
+  # if ! git_is_branch_merged_into "$FEATURE_BRANCH" "$MASTER_BRANCH"; then
+  #   git_do merge --no-ff "$MASTER_BRANCH" -m "### marge from $MASTER_BRANCH into $FEATURE_BRANCH" || \
+  #     die "There were merge conflicts."
 
-    git_do checkout "$MASTER_BRANCH" || \
-      die "Could not check out $MASTER_BRANCH."
+  #   git_do checkout "$MASTER_BRANCH" || \
+  #     die "Could not check out $MASTER_BRANCH."
 
-    git_do merge --no-ff "$FEATURE_BRANCH" -m "### marge from $FEATURE_BRANCH into $MASTER_BRANCH" || \
-      die "There were merge conflicts."
-  fi
+  #   git_do merge --no-ff "$FEATURE_BRANCH" -m "### marge from $FEATURE_BRANCH into $MASTER_BRANCH" || \
+  #     die "There were merge conflicts."
+  # fi
 
-  git_do push origin "$MASTER_BRANCH" || \
-    die "Pushing master to origin failed. Please run finish again to retry."
+  # git_do push origin "$MASTER_BRANCH" || \
+  #   die "Pushing master to origin failed. Please run finish again to retry."
 
-  git_do branch -d "$FEATURE_BRANCH"
+  # git_do branch -d "$FEATURE_BRANCH"
 }
 
 

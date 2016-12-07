@@ -24,3 +24,5 @@ echo " >   $3"
 echo " >   $4"
 echo ""
 echo " > done"
+
+exit 1
