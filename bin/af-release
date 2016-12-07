@@ -1,0 +1,245 @@
+#!/bin/sh
+
+
+init() {
+  require_git_repo
+  require_af_initialized
+  af_load_settings
+  af_load_version
+}
+
+
+usage() {
+  echo "usage: af release create    Create release branch (run on master branch)."
+  echo "       af release test      Create rcbuild or patchbuild (run on release-*.* branch)."
+  echo "       af release build     Create relaase build (run on release-*.* branch)."
+}
+
+
+cmd_default() {
+  cmd_help "$@"
+}
+
+
+cmd_create() {
+  RELEASE_BRANCH="$RELEASE_PREFIX$VERSION_A.$(($VERSION_B + 1))"
+  RELEASE_TAG="$VERSION_A.$(($VERSION_B + 1)).0.0"
+
+  # sanity checks
+  require_clean_working_tree
+  require_current_branch $MASTER_BRANCH
+  require_branch_absent $RELEASE_BRANCH
+  require_tag_absent $RELEASE_TAG
+
+  # fetch and pull from origin
+  git_do fetch -q origin
+  git_do pull -q origin
+
+  # create branch
+  git_do checkout -b "$RELEASE_BRANCH"
+
+
+  # change master version to a.(b+2).(c+1).0
+  git_do checkout "$MASTER_BRANCH"
+
+  NEW_MASTER_VERSION="$VERSION_A.$(($VERSION_B + 2)).$(($VERSION_C + 1)).0"
+
+  # set new version name
+  read -p "Please enter new version name: " new_name
+  VERSION_NAME=$new_name
+
+  af_update_version $NEW_MASTER_VERSION $VERSION_NAME
+  af_load_version
+
+  # update product version
+  ./bin/update-version
+
+  # add untracket files
+  git_do add -A
+
+  # commit files
+  git_do commit -a -m "### create next dev version: $NEW_MASTER_VERSION"
+
+  git_do push origin "$MASTER_BRANCH" || \
+    die "Pushing master to origin failed. Please run finish again to retry."
+
+
+  # preparation release version
+  git_do checkout "$RELEASE_BRANCH"
+
+  af_load_version
+
+  # change version to release a.(b+1).0.1
+  NEW_VERSION="$VERSION_A.$(($VERSION_B + 1)).0.1"
+  af_update_version $NEW_VERSION $VERSION_NAME
+
+  # update product version
+  ./bin/update-version
+
+  # add untracket files
+  git_do add -A
+
+  # commit files
+  git_do commit -a -m "### update release version: $NEW_VERSION"
+
+  git_do tag -a -m "### tag: $RELEASE_TAG" "$RELEASE_TAG" "$RELEASE_BRANCH" || \
+    die "Tagging failed. Please run finish again to retry."
+
+  git_do push origin "$RELEASE_BRANCH" || \
+    die "Pushing release to origin failed. Please run finish again to retry."
+
+  git_do push origin "$RELEASE_TAG" || \
+    die "Pushing tag to origin failed. Please run finish again to retry."
+}
+
+
+cmd_test() {
+  if [[ "$VERSION_C" == "0" ]]; then
+    BUILD_BRANCH="$RCBUILD_PREFIX$VERSION"
+  else
+    BUILD_BRANCH="$HOTFIX_PREFIX$VERSION"
+  fi
+  RELEASE_BRANCH=`git_current_branch`
+
+  # sanity checks
+  require_clean_working_tree
+  require_current_branch_prefix $RELEASE_PREFIX
+  require_branch_absent $BUILD_BRANCH
+  require_tag_absent "$VERSION"
+
+  # fetch and pull from origin
+  git_do fetch -q origin
+  git_do pull -q origin
+
+  # create branch
+  git_do checkout -b "$BUILD_BRANCH"
+
+
+  # build and deploy (from af-build-common)
+  af_build_all
+
+
+  # increment rc version
+  NEW_VERSION=$VERSION_A.$VERSION_B.$VERSION_C.$(($VERSION_D + 1))
+  af_update_version $NEW_VERSION $VERSION_NAME
+
+  # update product version
+  ./bin/update-version
+
+  # add untracket files
+  git_do add -A
+
+  # commit files
+  git_do commit -a -m "### build release candidate $VERSION"
+
+  if has "$ORIGIN/$RELEASE_BRANCH" $(git_remote_branches); then
+    require_branches_equal "$RELEASE_BRANCH" "$ORIGIN/$RELEASE_BRANCH"
+  fi
+
+  if ! git_is_branch_merged_into "$BUILD_BRANCH" "$RELEASE_BRANCH"; then
+    git_do checkout "$RELEASE_BRANCH" || \
+      die "Could not check out $RELEASE_BRANCH."
+
+    git_do merge --no-ff "$BUILD_BRANCH" -m "### marge from $BUILD_BRANCH into $RELEASE_BRANCH" || \
+      die "There were merge conflicts."
+  fi
+
+  git_do tag -a -m "### tag: $VERSION" "$VERSION" "$RELEASE_BRANCH" || \
+    die "Tagging failed. Please run finish again to retry."
+
+  git_do push origin "$RELEASE_BRANCH" || \
+    die "Pushing master to origin failed. Please run finish again to retry."
+
+  git_do push origin "$VERSION" || \
+    die "Pushing tag to origin failed. Please run finish again to retry."
+
+  git_do branch -d "$BUILD_BRANCH"
+}
+
+
+cmd_build() {
+  RELEASEBUILD_VERSION="$VERSION_A.$VERSION_B.$(($VERSION_C + 1))"
+  RELEASE_VERSION="$VERSION_A.$VERSION_B.$(($VERSION_C + 2)).0"
+
+  RELEASEBUILD_BRANCH=$RELEASEBUILD_PREFIX$RELEASEBUILD_VERSION
+
+  RELEASE_BRANCH=`git_current_branch`
+
+  # sanity checks
+  require_clean_working_tree
+  require_current_branch_prefix $RELEASE_PREFIX
+  require_branch_absent $RELEASEBUILD_BRANCH
+  require_tag_absent "$RELEASEBUILD_VERSION"
+  require_tag_absent "$RELEASE_VERSION"
+
+  # fetch and pull from origin
+  git_do fetch -q origin
+  git_do pull -q origin
+
+  # create branch
+  git_do checkout -b "$RELEASEBUILD_BRANCH"
+
+  NEW_VERSION="$VERSION_A.$VERSION_B.$(($VERSION_C + 1)).0"
+  af_update_version $NEW_VERSION $VERSION_NAME
+  af_load_version
+
+  ./bin/update-version
+
+  # build and deploy (from af-build-common)
+  af_build_all
+
+  # increment rc version
+  NEW_VERSION="$VERSION_A.$VERSION_B.$(($VERSION_C + 1)).1"
+  af_update_version $NEW_VERSION $VERSION_NAME
+  af_load_version
+
+  # add untracket files
+  git_do add -A
+
+  # commit files
+  git_do commit -a -m "### build release $RELEASEBUILD_VERSION"
+
+  if has "$ORIGIN/$RELEASE_BRANCH" $(git_remote_branches); then
+    require_branches_equal "$RELEASE_BRANCH" "$ORIGIN/$RELEASE_BRANCH"
+  fi
+
+  if ! git_is_branch_merged_into "$RELEASEBUILD_BRANCH" "$RELEASE_BRANCH"; then
+    git_do checkout "$RELEASE_BRANCH" || \
+      die "Could not check out $RELEASE_BRANCH."
+
+    git_do merge --no-ff "$RELEASEBUILD_BRANCH" -m "### marge from $RELEASEBUILD_BRANCH into $RELEASE_BRANCH" || \
+      die "There were merge conflicts."
+  fi
+
+  git_do tag -a -m "### tag: $RELEASEBUILD_VERSION" "$RELEASEBUILD_VERSION" "$RELEASE_BRANCH" || \
+    die "Tagging failed. Please run finish again to retry."
+
+  # update product version
+  ./bin/update-version
+
+  add untracket files
+  git_do add -A
+
+  commit files
+  git_do commit -a -m "### update release version: $NEW_VERSION"
+
+  git_do tag -a -m "### tag: $RELEASE_VERSION" "$RELEASE_VERSION" "$RELEASE_BRANCH" || \
+    die "Tagging failed. Please run finish again to retry."
+
+  git_do push origin "$RELEASE_BRANCH" || \
+    die "Pushing master to origin failed. Please run finish again to retry."
+
+  git_do push origin "$RELEASEBUILD_VERSION" || \
+    die "Pushing tag to origin failed. Please run finish again to retry."
+
+  git_do push origin "$RELEASE_VERSION" || \
+    die "Pushing tag to origin failed. Please run finish again to retry."
+
+  git_do branch -d "$RELEASEBUILD_BRANCH"
+}
+
+
+cmd_help() {
+  usage
+  exit 0
+}

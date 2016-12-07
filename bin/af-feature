@@ -1,0 +1,86 @@
+#!/bin/sh
+
+
+init() {
+  require_git_repo
+  require_af_initialized
+  af_load_settings
+  af_load_version
+}
+
+
+usage() {
+  echo "usage: af feature start <name>"
+  echo "       af feature finish"
+}
+
+
+cmd_default() {
+  cmd_help "$@"
+}
+
+
+cmd_start() {
+  if [[ "$1" = "" ]]; then
+    usage
+    exit 1
+  fi
+
+  FEATURE_NAME=""
+  while [[ ! "$1" = "" ]] ; do
+    if [[ "$FEATURE_NAME" = "" ]] ; then
+      FEATURE_NAME="$1"
+    else
+      name="_$1"
+      FEATURE_NAME="$FEATURE_NAME$name"
+    fi
+    shift
+  done
+
+  FEATURE_BRANCH="$FEATURE_PREFIX$FEATURE_NAME"
+
+  # require_clean_working_tree
+  require_current_branch $MASTER_BRANCH
+  require_branch_absent $FEATURE_BRANCH
+
+  # fetch and pull from origin
+  git_do fetch -q origin
+  git_do pull -q origin
+
+  # create branch
+  git_do checkout -b "$FEATURE_BRANCH"
+}
+
+
+cmd_finish() {
+  FEATURE_BRANCH=`git_current_branch`
+
+  require_clean_working_tree
+  require_current_branch_prefix $FEATURE_PREFIX
+
+  if has "$ORIGIN/$MASTER_BRANCH" $(git_remote_branches); then
+    require_branches_equal "$MASTER_BRANCH" "$ORIGIN/$MASTER_BRANCH"
+  fi
+
+  if ! git_is_branch_merged_into "$FEATURE_BRANCH" "$MASTER_BRANCH"; then
+    git_do merge --no-ff "$MASTER_BRANCH" -m "### marge from $MASTER_BRANCH into $FEATURE_BRANCH" || \
+      die "There were merge conflicts."
+
+    git_do checkout "$MASTER_BRANCH" || \
+      die "Could not check out $MASTER_BRANCH."
+
+    git_do merge --no-ff "$FEATURE_BRANCH" -m "### marge from $FEATURE_BRANCH into $MASTER_BRANCH" || \
+      die "There were merge conflicts."
+  fi
+
+  git_do push origin "$MASTER_BRANCH" || \
+    die "Pushing master to origin failed. Please run finish again to retry."
+
+  git_do branch -d "$FEATURE_BRANCH"
+}
+
+
+cmd_help() {
+  usage
+  exit 0
+}

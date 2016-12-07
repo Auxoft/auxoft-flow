@@ -1,0 +1,61 @@
+#!/bin/sh
+
+
+#
+# Build functionality
+#
+
+af_build_all() {
+  # update product version
+  ./bin/update-version
+
+  # # create release notes
+  ./bin/create-rn
+
+  # build chrome and safaro=i extension
+  grunt build
+
+  # build osx app
+  ./bin/build-cocoa
+  # TODO: fix to autobuild
+  echo
+  echo "Please manual build OSX KeyReel and KeyReelUninstall so put the KeyReel.app and KeyReelUninstall.app to ./build/osx/ folder"
+  echo
+  read -p "Press any key to continue... " -n1 -s
+
+  # create safari binary
+  # TODO: fix to autobuild
+  echo
+  echo "Please manual build safari extension and put the KeyReel.safariextz to ./build/safari/ folder"
+  echo
+  read -p "Press any key to continue... " -n1 -s
+
+   # pack osx, safari and chrome binaries and rename
+  ./bin/pack
+
+  # deploy binaries to keyreel.io server
+  ./bin/deploy
+  ./bin/sendemail
+
+  # build and deploy ios app
+  # TODO: fix to autobuild
+  echo
+  echo "Please manual buil ios app and send to nightbuild testers over fabric.app"
+  echo
+  read -p "Press any key to continue... " -n1 -s
+
+  # uppload chrome extension to google store
+  # TODO: fix to autoupload
+  echo
+  echo "Please upload chrome extension from ./deploy/chrome/KeyReel_<version>.zip file to google strore"
+  echo
+  read -p "Press any key to continue... " -n1 -s
+
+  # uppload osx to devmate
+  # TODO: fix to autoupload
+  echo
+  echo "Please upload ./deploy/osx/KeyReel_<version>.dmg file to devmate site, fill fields:"
+  echo "  Bundle Version: $VERSION"
+  echo
+  read -p "Press any key to continue... " -n1 -s	
+}

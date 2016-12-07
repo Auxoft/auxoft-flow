@@ -1,0 +1,38 @@
+#!/bin/sh
+
+
+usage() {
+  echo "usage: af install"
+}
+
+
+parse_args() {
+  # parse options
+  FLAGS "$@" || exit $?
+  eval set -- "${FLAGS_ARGV}"
+}
+
+
+cmd_default() {
+  parse_args "$@"
+
+  if [ ! -e "./af" ]; then
+    mssg "create ./af script in root project folder"
+
+    echo "#!/bin/sh"             >  ./af
+    echo ""                      >> ./af
+    echo $(dirname $0)'/af $@'   >> ./af
+
+    chmod +x ./af
+  else 
+    warn "./af exist in root project folder"
+  fi
+
+  mssg "done"
+}
+
+
+cmd_help() {
+  usage
+  exit 0
+}

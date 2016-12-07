@@ -1,0 +1,84 @@
+#!/bin/sh
+
+
+init() {
+  require_git_repo
+  require_af_initialized
+  af_load_settings
+  af_load_version
+}
+
+
+usage() {
+  echo "usage: af sprintbuild"
+}
+
+
+cmd_default() {
+  SB_BRANCH=$SPRINTBUILD_PREFIX$VERSION_C
+  SB_VERSION="$VERSION_A.$VERSION_B.$(($VERSION_C + 1))"
+
+  # sanity checks
+  require_clean_working_tree
+  require_current_branch $MASTER_BRANCH
+  require_branch_absent $SB_BRANCH
+  require_tag_absent "$SB_VERSION"
+
+  # fetch and pull from origin
+  git_do fetch -q origin
+  git_do pull -q origin
+
+  # create branch
+  git_do checkout -b "$SB_BRANCH"
+
+  NEW_VERSION="$VERSION_A.$VERSION_B.$(($VERSION_C + 1)).0"
+  af_update_version $NEW_VERSION $VERSION_NAME
+  af_load_version
+
+
+  # build and deploy
+  af_build_all
+
+
+  # increment next nightbuild version
+  NEW_VERSION=$VERSION_A.$VERSION_B.$VERSION_C.$(($VERSION_D + 1))
+  af_update_version $NEW_VERSION $VERSION_NAME
+
+  # update product version
+  ./bin/update-version
+
+  # add untracket files
+  git_do add -A
+
+  # commit files
+  git_do commit -a -m "### build sprintbuild $(($VERSION_C - 1))"
+
+  if has "$ORIGIN/$MASTER_BRANCH" $(git_remote_branches); then
+    require_branches_equal "$MASTER_BRANCH" "$ORIGIN/$MASTER_BRANCH"
+  fi
+
+  if ! git_is_branch_merged_into "$SB_BRANCH" "$MASTER_BRANCH"; then
+    git_do checkout "$MASTER_BRANCH" || \
+      die "Could not check out $MASTER_BRANCH."
+
+    git_do merge --no-ff "$SB_BRANCH" -m "### marge from $SB_BRANCH into $MASTER_BRANCH" || \
+      die "There were merge conflicts."
+  fi
+
+  git_do tag -a -m "### tag: $SB_VERSION" "$SB_VERSION" "$MASTER_BRANCH" || \
+    die "Tagging failed. Please run finish again to retry."
+
+  git_do push origin "$MASTER_BRANCH" || \
+    die "Pushing master to origin failed. Please run finish again to retry."
+
+  git_do push origin "$SB_VERSION" || \
+    die "Pushing tag to origin failed. Please run finish again to retry."
+
+  git_do branch -d "$SB_BRANCH"
+}
+
+
+cmd_help() {
+  usage
+  exit 0
+}

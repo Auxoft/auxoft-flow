@@ -1,0 +1,62 @@
+#!/bin/sh
+
+
+usage() {
+  echo "usage: af init [-f]"
+}
+
+
+parse_args() {
+  # parse options
+  FLAGS "$@" || exit $?
+  eval set -- "${FLAGS_ARGV}"
+}
+
+
+cmd_default() {
+  DEFINE_boolean force false 'force setting of af branches, even if already configured' f
+  parse_args "$@"
+
+  if ! git rev-parse --git-dir >/dev/null 2>&1; then
+    git_do init
+  else
+    # assure that we are not working in a repo with local changes
+    git_repo_is_headless || require_clean_working_tree
+  fi
+
+  # running git flow init on an already initialized repo is fine
+  if af_is_initialized && ! flag force; then
+    warn "Already initialized for Auxoft Flow."
+    warn "To force reinitialization, use: af init -f"
+    exit 0
+  fi
+
+  mssg "add config values to git local config"
+
+  # version
+  git config --local --remove-section auxoft.core 1> /dev/null 2> /dev/null
+  git config --local --add auxoft.core.version 0.0.2
+  #
+  # branch
+  git config --local --remove-section auxoft.branch 1> /dev/null 2> /dev/null
+  git config --local --add auxoft.branch.master master
+  #
+  # prifix
+  git config --local --remove-section auxoft.prefix 1> /dev/null 2> /dev/null
+  git config --local --add auxoft.prefix.feature feature/
+  git config --local --add auxoft.prefix.hotfix hotfix/
+  git config --local --add auxoft.prefix.release release/
+  git config --local --add auxoft.prefix.nightbuild nightbuild/
+  git config --local --add auxoft.prefix.sprintbuild sprintbuild/
+  git config --local --add auxoft.prefix.rcbuild rcbuild/
+  git config --local --add auxoft.prefix.patchbuild patchbuild/
+  git config --local --add auxoft.prefix.releasebuild releasebuild/
+
+  mssg "done"
+}
+
+
+cmd_help() {
+  usage
+  exit 0
+}
