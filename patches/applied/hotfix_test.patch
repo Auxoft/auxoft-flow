@@ -1,33 +1,116 @@
-From e3f3e55bd45516e57bd40bcd12798f8287546b07 Mon Sep 17 00:00:00 2001
+From f55388f85af6d52d48de19d1426b6558ee7d8621 Mon Sep 17 00:00:00 2001
 From: Petro Ladkin <petro@auxoft.com>
-Date: Thu, 8 Dec 2016 18:06:00 +0200
-Subject: [PATCH] ### temp
+Date: Thu, 8 Dec 2016 18:08:28 +0200
+Subject: [PATCH] ### test
 
 ---
- bin/af-hotfix | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ bin/af-feature     | 4 ++++
+ bin/af-hotfix      | 4 ++++
+ bin/af-nightbuild  | 2 ++
+ bin/af-release     | 6 ++++++
+ bin/af-sprintbuild | 2 ++
+ 5 files changed, 18 insertions(+)
 
+diff --git a/bin/af-feature b/bin/af-feature
+index 25e9480..3b88b0d 100644
+--- a/bin/af-feature
++++ b/bin/af-feature
+@@ -21,6 +21,8 @@ cmd_default() {
+ 
+ 
+ cmd_start() {
++  parse_args "$@"
++
+   if [[ "$1" = "" ]]; then
+     usage
+     exit 1
+@@ -62,6 +64,8 @@ cmd_start() {
+ 
+ 
+ cmd_finish() {
++  parse_args "$@"
++
+   FEATURE_BRANCH=`git_current_branch`
+ 
+ 
 diff --git a/bin/af-hotfix b/bin/af-hotfix
-index b71bdfd..67d1213 100644
+index 67d1213..7e09fd6 100644
 --- a/bin/af-hotfix
 +++ b/bin/af-hotfix
-@@ -161,7 +161,7 @@ cmd_finish() {
- 
-     mssg "start feature $PATCH_FEATURE_NAME"
- 
--    $AF_DIR/af feature start "$PATCH_FEATURE_NAME" || \
-+    $AF_DIR/af feature start "$PATCH_FEATURE_NAME" -s || \
-       die "Could not start feature $PATCH_FEATURE_NAME."
+@@ -21,6 +21,8 @@ cmd_default() {
  
  
-@@ -187,7 +187,7 @@ cmd_finish() {
+ cmd_start() {
++  parse_args "$@"
++
+   if [[ "$1" = "" ]]; then
+     usage
+     exit 1
+@@ -61,6 +63,8 @@ cmd_start() {
  
-         git_do commit -a -m "### apply patch $APPLIED_PATCH_FILE"
  
--        $AF_DIR/af feature finish || \
-+        $AF_DIR/af feature finish -s || \
-           die "Could not finish feature $PATCH_FEATURE_NAME."
-       fi
+ cmd_finish() {
++  parse_args "$@"
++
+   HOTFIX_BRANCH=`git_current_branch`
+   RELEASE_BRANCH="$RELEASE_PREFIX$VERSION_A.$VERSION_B"
+ 
+diff --git a/bin/af-nightbuild b/bin/af-nightbuild
+index 4515924..c1534b9 100644
+--- a/bin/af-nightbuild
++++ b/bin/af-nightbuild
+@@ -15,6 +15,8 @@ usage() {
+ 
+ 
+ cmd_default() {
++  parse_args "$@"
++
+   NB_BRANCH=$NIGHTBUILD_PREFIX$VERSION_C.$VERSION_D
+ 
+   # sanity checks
+diff --git a/bin/af-release b/bin/af-release
+index 3e64122..1016c10 100644
+--- a/bin/af-release
++++ b/bin/af-release
+@@ -22,6 +22,8 @@ cmd_default() {
+ 
+ 
+ cmd_create() {
++  parse_args "$@"
++
+   RELEASE_BRANCH="$RELEASE_PREFIX$VERSION_A.$(($VERSION_B + 1))"
+   RELEASE_TAG="$VERSION_A.$(($VERSION_B + 1)).0.0"
+ 
+@@ -94,6 +96,8 @@ cmd_create() {
+ 
+ 
+ cmd_test() {
++  parse_args "$@"
++
+   if [[ "$VERSION_C" == "0" ]]; then
+     BUILD_BRANCH="$RCBUILD_PREFIX$VERSION"
+   else
+@@ -158,6 +162,8 @@ cmd_test() {
+ 
+ 
+ cmd_build() {
++  parse_args "$@"
++
+   RELEASEBUILD_VERSION="$VERSION_A.$VERSION_B.$(($VERSION_C + 1))"
+   RELEASE_VERSION="$VERSION_A.$VERSION_B.$(($VERSION_C + 2)).0"
+ 
+diff --git a/bin/af-sprintbuild b/bin/af-sprintbuild
+index f7f39e4..dd79fdf 100644
+--- a/bin/af-sprintbuild
++++ b/bin/af-sprintbuild
+@@ -15,6 +15,8 @@ usage() {
+ 
+ 
+ cmd_default() {
++  parse_args "$@"
++
+   SB_BRANCH=$SPRINTBUILD_PREFIX$VERSION_C
+   SB_VERSION="$VERSION_A.$VERSION_B.$(($VERSION_C + 1))"
  
 -- 
 2.9.3 (Apple Git-75)
