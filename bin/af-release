@@ -22,6 +22,8 @@ cmd_default() {
 
 
 cmd_create() {
+  parse_args "$@"
+
   RELEASE_BRANCH="$RELEASE_PREFIX$VERSION_A.$(($VERSION_B + 1))"
   RELEASE_TAG="$VERSION_A.$(($VERSION_B + 1)).0.0"
 
@@ -94,6 +96,8 @@ cmd_create() {
 
 
 cmd_test() {
+  parse_args "$@"
+
   if [[ "$VERSION_C" == "0" ]]; then
     BUILD_BRANCH="$RCBUILD_PREFIX$VERSION"
   else
@@ -158,6 +162,8 @@ cmd_test() {
 
 
 cmd_build() {
+  parse_args "$@"
+
   RELEASEBUILD_VERSION="$VERSION_A.$VERSION_B.$(($VERSION_C + 1))"
   RELEASE_VERSION="$VERSION_A.$VERSION_B.$(($VERSION_C + 2)).0"
 
