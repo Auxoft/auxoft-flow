@@ -1,0 +1,41 @@
+From 678163a6ffc619dd04c5df1aba0d2b0f5768fb91 Mon Sep 17 00:00:00 2001
+From: Petro Ladkin <petro@auxoft.com>
+Date: Thu, 8 Dec 2016 17:51:14 +0200
+Subject: [PATCH] ### temp
+
+---
+ bin/af-release     | 3 +++
+ bin/af-sprintbuild | 3 +++
+ 2 files changed, 6 insertions(+)
+
+diff --git a/bin/af-release b/bin/af-release
+index 3e64122..54ed1fe 100644
+--- a/bin/af-release
++++ b/bin/af-release
+@@ -22,6 +22,9 @@ cmd_default() {
+ 
+ 
+ cmd_create() {
++
++
++  
+   RELEASE_BRANCH="$RELEASE_PREFIX$VERSION_A.$(($VERSION_B + 1))"
+   RELEASE_TAG="$VERSION_A.$(($VERSION_B + 1)).0.0"
+ 
+diff --git a/bin/af-sprintbuild b/bin/af-sprintbuild
+index f7f39e4..0f30f6b 100644
+--- a/bin/af-sprintbuild
++++ b/bin/af-sprintbuild
+@@ -15,6 +15,9 @@ usage() {
+ 
+ 
+ cmd_default() {
++
++
++  
+   SB_BRANCH=$SPRINTBUILD_PREFIX$VERSION_C
+   SB_VERSION="$VERSION_A.$VERSION_B.$(($VERSION_C + 1))"
+ 
+-- 
+2.9.3 (Apple Git-75)
+
