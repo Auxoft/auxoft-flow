@@ -15,9 +15,6 @@ usage() {
 
 
 cmd_default() {
-
-
-  
   SB_BRANCH=$SPRINTBUILD_PREFIX$VERSION_C
   SB_VERSION="$VERSION_A.$VERSION_B.$(($VERSION_C + 1))"
 
