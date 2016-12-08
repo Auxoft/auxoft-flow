@@ -6,6 +6,11 @@
 #
 
 af_build_all() {
+
+
+
+
+
   # update product version
   ./bin/update-version
 
