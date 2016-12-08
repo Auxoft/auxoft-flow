@@ -43,13 +43,10 @@ cmd_start() {
   require_branch_absent $HOTFIX_BRANCH
 
   
-  mssg "pull from origin/$MASTER_BRANCH into $MASTER_BRANCH"
+  mssg "pull from origin/$RELEASE_PREFIX into $RELEASE_PREFIX"
 
-  git_do fetch -q origin || \
-    die "Could not fetch from origin"
-
-  git_do pull -q origin || \
-    die "Could not pull from origin"
+  git_do fetch -q origin
+  git_do pull -q origin
 
 
   mssg "create hotfix branch: $HOTFIX_BRANCH"
@@ -96,11 +93,8 @@ cmd_finish() {
 
   mssg "pull from origin/$MASTER_BRANCH into $MASTER_BRANCH"
 
-  git_do fetch -q origin || \
-    die "Could not fetch from origin"
-
-  git_do pull -q origin || \
-    die "Could not pull from origin"
+  git_do fetch -q origin
+  git_do pull -q origin
 
 
   mssg "checkout to $HOTFIX_BRANCH"
@@ -167,7 +161,7 @@ cmd_finish() {
 
     mssg "start feature $PATCH_FEATURE_NAME"
 
-    $AF_DIR//af-feature start "$PATCH_FEATURE_NAME" || \
+    $AF_DIR/af-feature start "$PATCH_FEATURE_NAME" || \
       die "Could not start feature $PATCH_FEATURE_NAME."
 
 
@@ -193,7 +187,7 @@ cmd_finish() {
 
         git_do commit -a -m "### apply patch $APPLIED_PATCH_FILE"
 
-        $AF_DIR//af-feature finish || \
+        $AF_DIR/af-feature finish || \
           die "Could not finish feature $PATCH_FEATURE_NAME."
       fi
 
