@@ -12,11 +12,46 @@ mssg() {
   fi  
 }
 warn() { echo " * $@" >&2; }
-die() { warn " * $@"; exit 1; }
+die() { echo " ** $@" >&2; exit 1; }
 
 escape() {
   echo "$1" | sed 's/\([\.\$\*]\)/\\\1/g'
 }
+
+
+# shell input
+question_yn() {
+  local result=false
+  while true; do
+    read -r -p "$1 " response
+    if [[ "$response" = "" ]]; then
+      response="$2"
+    fi
+    case $response in
+      [yY]* ) 
+          result=true
+          break
+          ;;
+
+      [nN]* ) 
+          result=false
+          break
+          ;;
+
+      * ) echo "Please answer yes or no.";;
+    esac
+  done
+  $result
+}
+
+question_Yn() {
+  question_yn "$1 [Y/n]" "Y"
+}
+
+question_yN() {
+  question_yn "$1 [y/N]" "N"
+}
+
 
 # set logic
 has() {

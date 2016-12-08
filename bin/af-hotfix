@@ -39,18 +39,25 @@ cmd_start() {
 
   HOTFIX_BRANCH="$HOTFIX_PREFIX$HOTFIX_NAME"
 
-  # require_clean_working_tree
   require_current_branch_prefix $RELEASE_PREFIX
   require_branch_absent $HOTFIX_BRANCH
 
-  # fetch and pull from origin
-  git_do fetch -q origin
-  git_do pull -q origin
+  
+  mssg "pull from origin/$MASTER_BRANCH into $MASTER_BRANCH"
+
+  git_do fetch -q origin || \
+    die "Could not fetch from origin"
+
+  git_do pull -q origin || \
+    die "Could not pull from origin"
+
 
   mssg "create hotfix branch: $HOTFIX_BRANCH"
 
   # create branch
-  git_do checkout -b "$HOTFIX_BRANCH"
+  git_do checkout -b "$HOTFIX_BRANCH" || \
+    die "Could not check out $HOTFIX_BRANCH"
+
 
   mssg "done"
 }
@@ -62,150 +69,152 @@ cmd_finish() {
 
   HOTFIX_NAME=`echo "$HOTFIX_BRANCH" | sed -e "s!^$HOTFIX_PREFIX!!"`
 
+  PATCH_FILE="./patches/hotfix_$HOTFIX_NAME.patch"
+  APPLIED_PATCH_FILE="./patches/applied/hotfix_$HOTFIX_NAME.patch"
+
+  PATCH_PREFIX="apply_patch_"
+  PATCH_FEATURE_NAME="$PATCH_PREFIX$HOTFIX_NAME"
+
+
   require_clean_working_tree
   require_current_branch_prefix $HOTFIX_PREFIX
-
-  $AF_DIR/hooks/build-check "$VERSION_SHORT" "$VERSION_NAME" "$VERSION_TYPE" "$VERSION_LONG" || \
-    die "There were check build problem."
 
   if has "$ORIGIN/$RELEASE_BRANCH" $(git_remote_branches); then
     require_branches_equal "$RELEASE_BRANCH" "$ORIGIN/$RELEASE_BRANCH"
   fi
 
+  if git_is_branch_merged_into "$HOTFIX_BRANCH" "$MASTER_BRANCH"; then
+    die "There were merge conflicts from $HOTFIX_BRANCH into $MASTER_BRANCH."
+  fi
+
+
+  mssg "checkout to $RELEASE_BRANCH"
+
+  git_do checkout "$RELEASE_BRANCH" || \
+    die "Could not check out $RELEASE_BRANCH."
+
+
+  mssg "pull from origin/$MASTER_BRANCH into $MASTER_BRANCH"
+
+  git_do fetch -q origin || \
+    die "Could not fetch from origin"
+
+  git_do pull -q origin || \
+    die "Could not pull from origin"
+
+
+  mssg "checkout to $HOTFIX_BRANCH"
+
+  git_do checkout "$HOTFIX_BRANCH" || \
+    die "Could not check out $HOTFIX_BRANCH."
+
+
+  mssg "marge from $RELEASE_BRANCH into $HOTFIX_BRANCH"
+
+  git_do merge --no-ff "$RELEASE_BRANCH" -m "### marge from $RELEASE_BRANCH into $HOTFIX_BRANCH" || \
+    die "There were merge conflicts."
+
+
+  mssg "create patch file $PATCH_FILE between $HOTFIX_BRANCH and $RELEASE_BRANCH"
+
   mkdir -p ./patches/applied 1> /dev/null 2> /dev/null
 
-  PATCH_FILE="./patches/hotfix_$HOTFIX_NAME.patch"
-
-  mssg "create patch file: $PATCH_FILE"
-
-  # create patch
   git_do format-patch "$RELEASE_BRANCH" --stdout > "$PATCH_FILE" || \
     die "Could not create patch."
 
-  if ! git_is_branch_merged_into "$HOTFIX_BRANCH" "$RELEASE_BRANCH"; then
-    git_do merge --no-ff "$RELEASE_BRANCH" -m "### marge from $RELEASE_BRANCH into $HOTFIX_BRANCH" || \
-      die "There were merge conflicts."
+
+  mssg "marge from $RELEASE_BRANCH into $HOTFIX_BRANCH"
+
+  git_do merge --no-ff "$RELEASE_BRANCH" -m "### marge from $RELEASE_BRANCH into $HOTFIX_BRANCH" || \
+    die "There were merge conflicts."
+
+
+  mssg "check building"
+
+  $AF_DIR/hooks/build-check "$VERSION_SHORT" "$VERSION_NAME" "$VERSION_TYPE" "$VERSION_LONG" || \
+    die "There were check build problem."
+
+
+  mssg "checkout to $RELEASE_BRANCH"
+
+  git_do checkout "$RELEASE_BRANCH" || \
+    die "Could not check out $RELEASE_BRANCH."
+
+
+  mssg "marge from $HOTFIX_BRANCH into $RELEASE_BRANCH"
+
+  git_do merge --no-ff "$HOTFIX_BRANCH" -m "### marge from $HOTFIX_BRANCH into $RELEASE_BRANCH" || \
+    die "There were merge conflicts."
+
+
+  mssg "push $RELEASE_BRANCH to origin"
+
+  git_do push origin "$RELEASE_BRANCH" || \
+    die "Pushing master to origin failed. Please run finish again to retry."
+
+
+  mssg "delete $HOTFIX_BRANCH"
+
+  git_do branch -D "$HOTFIX_BRANCH"
+
+
+  if question_Yn "Do you apply '$PATCH_FILE' to master?"; then
+    mssg "checkout to $MASTER_BRANCH"
+
+    git_do checkout "$MASTER_BRANCH" || \
+      die "Could not check out $MASTER_BRANCH."
+
+
+    mssg "start feature $PATCH_FEATURE_NAME"
+
+    $AF_DIR//af-feature start "$PATCH_FEATURE_NAME" || \
+      die "Could not start feature $PATCH_FEATURE_NAME."
+
+
+    mssg "apply path $PATCH_FILE to $FEATURE_PREFIX$PATCH_FEATURE_NAME"
+
+    APPLIED_PATCH=1
+    git_do apply "$PATCH_FILE" || \
+      while true; do
+        warn "Could not apply path $PATCH_FILE to $PATCH_FEATURE_BRANCH"
+        APPLIED_PATCH=0
+        echo " * please manual apply $PATCH_FILE file to branches"
+        break
+      done
+
+
+    if [[ "$APPLIED_PATCH" = "1" ]]; then
+      mv "$PATCH_FILE" "$APPLIED_PATCH_FILE"
+
+      if question_Yn "Do you finish feature '$PATCH_FEATURE_NAME'?"; then
+        mssg "commit applied files"
+
+        git_do add -A
+
+        git_do commit -a -m "### apply patch $APPLIED_PATCH_FILE"
+
+        $AF_DIR//af-feature finish || \
+          die "Could not finish feature $PATCH_FEATURE_NAME."
+      fi
+
+      if question_Yn "Do you remove '$APPLIED_PATCH_FILE' file?"; then
+        mssg "remove patch file $APPLIED_PATCH_FILE"
+
+        rm -r $APPLIED_PATCH_FILE 1> /dev/null 2> /dev/null
+      fi
+    fi
+
+
+    mssg "checkout to $RELEASE_BRANCH"
 
     git_do checkout "$RELEASE_BRANCH" || \
       die "Could not check out $RELEASE_BRANCH."
-
-    git_do merge --no-ff "$HOTFIX_BRANCH" -m "### marge from $HOTFIX_BRANCH into $RELEASE_BRANCH" || \
-      die "There were merge conflicts."
-
-    git_do push origin "$RELEASE_BRANCH" || \
-      die "Pushing master to origin failed. Please run finish again to retry."
-
-    git_do branch -D "$HOTFIX_BRANCH"
-
-    APPLY_PATCH=0
-    while true; do
-      read -p "Do you apply '$PATCH_FILE' to master? [Y/n]" yn
-      if [[ "$yn" = "" ]]; then
-        yn="Y"
-      fi
-      case $yn in
-          [Yy]* ) echo " * apply patch to master branch";
-            
-            git_do checkout "$MASTER_BRANCH" || \
-              die "Could not check out $MASTER_BRANCH."
-
-            PATCH_PREFIX="apply_patch_"
-            PATCH_FEATURE_BRANCH="$FEATURE_PREFIX$PATCH_PREFIX$HOTFIX_NAME"
-
-            # fetch and pull from origin
-            git_do fetch -q origin
-            git_do pull -q origin
-
-            # create branch
-            git_do checkout -b "$PATCH_FEATURE_BRANCH" || \
-              die "Could not check out $PATCH_FEATURE_BRANCH."
-
-
-            APPLY_PATCH=1
-            git_do apply "$PATCH_FILE" || \
-              while true; do
-                warn "Could not apply path $PATCH_FILE to $PATCH_FEATURE_BRANCH"
-                APPLY_PATCH=0
-                echo " * please manual apply $PATCH_FILE file to branches"
-                break
-              done
-
-
-            if [[ "$APPLY_PATCH" = "1" ]]; then
-              APPLIED_PATCH_FILE="./patches/applied/hotfix_$HOTFIX_NAME.patch"
-              mv "$PATCH_FILE" "$APPLIED_PATCH_FILE"
-
-              while true; do
-                read -p "Do you marge '$PATCH_FEATURE_BRANCH' to '$MASTER_BRANCH' branch? [y/N]" yn
-                if [[ "$yn" = "" ]]; then
-                  yn="N"
-                fi
-                case $yn in
-                    [Yy]* ) echo " * marge '$PATCH_FEATURE_BRANCH' to '$MASTER_BRANCH' branch";
-
-                      # add untracket files
-                      git_do add -A
-
-                      # commit files
-                      git_do commit -a -m "### apply patch $APPLIED_PATCH_FILE"
-
-                      if has "$ORIGIN/$MASTER_BRANCH" $(git_remote_branches); then
-                        require_branches_equal "$MASTER_BRANCH" "$ORIGIN/$MASTER_BRANCH"
-                      fi
-
-                      if ! git_is_branch_merged_into "$PATCH_FEATURE_BRANCH" "$MASTER_BRANCH"; then
-                        git_do checkout "$MASTER_BRANCH" || \
-                          die "Could not check out $MASTER_BRANCH."
-
-                        git_do merge --no-ff "$PATCH_FEATURE_BRANCH" -m "### marge from $PATCH_FEATURE_BRANCH into $MASTER_BRANCH" || \
-                          die "There were merge conflicts."
-                      fi
-
-                      git_do push origin "$MASTER_BRANCH" || \
-                        die "Pushing master to origin failed. Please run finish again to retry."
-
-                      git_do branch -d "$PATCH_FEATURE_BRANCH"
-
-                      break;;
-
-                    [Nn]* ) break;;
-                    * ) echo "Please answer yes or no.";;
-                esac
-              done
-
-              while true; do
-                read -p "Do you remove '$APPLIED_PATCH_FILE' file? [y/N]" yn
-                if [[ "$yn" = "" ]]; then
-                  yn="N"
-                fi
-                case $yn in
-                    [Yy]* ) echo " * remove path file";
-
-                      rm -r $APPLIED_PATCH_FILE 1> /dev/null 2> /dev/null
-
-                      break;;
-
-                    [Nn]* ) break;;
-                    * ) echo "Please answer yes or no.";;
-                esac
-              done
-            fi
-
-            git_do checkout "$RELEASE_BRANCH" || \
-              die "Could not check out $RELEASE_BRANCH."
-
-            break;;
-
-          [Nn]* ) echo " * please manual apply $PATCH_FILE file to branches";
-            break;;
-          * ) echo "Please answer yes or no.";;
-          
-      esac
-    done
-
   else
-    die "No marge from $HOTFIX_BRANCH to $RELEASE_BRANCH."
+    warn "please manual apply $PATCH_FILE file to branches"
   fi
+
+
+  mssg "done"
 }
 
 

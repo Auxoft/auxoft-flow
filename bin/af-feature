@@ -39,6 +39,7 @@ cmd_start() {
 
   FEATURE_BRANCH="$FEATURE_PREFIX$FEATURE_NAME"
 
+
   require_current_branch $MASTER_BRANCH
   require_branch_absent $FEATURE_BRANCH
 
@@ -65,6 +66,7 @@ cmd_start() {
 
 cmd_finish() {
   FEATURE_BRANCH=`git_current_branch`
+
 
   require_clean_working_tree
   require_current_branch_prefix $FEATURE_PREFIX
