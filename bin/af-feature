@@ -46,11 +46,8 @@ cmd_start() {
   
   mssg "pull from origin/$MASTER_BRANCH into $MASTER_BRANCH"
 
-  git_do fetch -q origin || \
-    die "Could not fetch from origin"
-
-  git_do pull -q origin || \
-    die "Could not pull from origin"
+  git_do fetch -q origin
+  git_do pull -q origin
 
   
   mssg "create feature branch: $FEATURE_BRANCH"
@@ -88,11 +85,8 @@ cmd_finish() {
 
   mssg "pull from origin/$MASTER_BRANCH into $MASTER_BRANCH"
 
-  git_do fetch -q origin || \
-    die "Could not fetch from origin"
-
-  git_do pull -q origin || \
-    die "Could not pull from origin"
+  git_do fetch -q origin
+  git_do pull -q origin
 
 
   mssg "checkout to $FEATURE_BRANCH"

@@ -43,13 +43,10 @@ cmd_start() {
   require_branch_absent $HOTFIX_BRANCH
 
   
-  mssg "pull from origin/$MASTER_BRANCH into $MASTER_BRANCH"
+  mssg "pull from origin/$RELEASE_PREFIX into $RELEASE_PREFIX"
 
-  git_do fetch -q origin || \
-    die "Could not fetch from origin"
-
-  git_do pull -q origin || \
-    die "Could not pull from origin"
+  git_do fetch -q origin
+  git_do pull -q origin
 
 
   mssg "create hotfix branch: $HOTFIX_BRANCH"
@@ -96,11 +93,8 @@ cmd_finish() {
 
   mssg "pull from origin/$MASTER_BRANCH into $MASTER_BRANCH"
 
-  git_do fetch -q origin || \
-    die "Could not fetch from origin"
-
-  git_do pull -q origin || \
-    die "Could not pull from origin"
+  git_do fetch -q origin
+  git_do pull -q origin
 
 
   mssg "checkout to $HOTFIX_BRANCH"
