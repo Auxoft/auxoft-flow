@@ -1,7 +1,7 @@
 #!/bin/sh
 
 
-# set app version:
+# set app version and update prijects version:
 #   first param   - a.b.c.d - app version             example:  0.2.1.4
 #   second param  - version_name - app version name   example:  alpha, beta, public_beta
 #
