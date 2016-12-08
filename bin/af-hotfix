@@ -161,7 +161,7 @@ cmd_finish() {
 
     mssg "start feature $PATCH_FEATURE_NAME"
 
-    $AF_DIR/af-feature start "$PATCH_FEATURE_NAME" || \
+    $AF_DIR/af feature start "$PATCH_FEATURE_NAME" || \
       die "Could not start feature $PATCH_FEATURE_NAME."
 
 
@@ -187,7 +187,7 @@ cmd_finish() {
 
         git_do commit -a -m "### apply patch $APPLIED_PATCH_FILE"
 
-        $AF_DIR/af-feature finish || \
+        $AF_DIR/af feature finish || \
           die "Could not finish feature $PATCH_FEATURE_NAME."
       fi
 
