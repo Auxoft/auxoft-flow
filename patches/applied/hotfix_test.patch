@@ -1,38 +1,67 @@
-From 678163a6ffc619dd04c5df1aba0d2b0f5768fb91 Mon Sep 17 00:00:00 2001
+From 90a39d7f9b8818f8f472229af9bbb26439010edc Mon Sep 17 00:00:00 2001
 From: Petro Ladkin <petro@auxoft.com>
-Date: Thu, 8 Dec 2016 17:51:14 +0200
+Date: Thu, 8 Dec 2016 18:03:31 +0200
 Subject: [PATCH] ### temp
 
 ---
- bin/af-release     | 3 +++
- bin/af-sprintbuild | 3 +++
- 2 files changed, 6 insertions(+)
+ bin/af-hotfix      | 2 +-
+ bin/af-nightbuild  | 3 ---
+ bin/af-release     | 3 ---
+ bin/af-sprintbuild | 3 ---
+ 4 files changed, 1 insertion(+), 10 deletions(-)
 
+diff --git a/bin/af-hotfix b/bin/af-hotfix
+index 263db1d..b71bdfd 100644
+--- a/bin/af-hotfix
++++ b/bin/af-hotfix
+@@ -91,7 +91,7 @@ cmd_finish() {
+     die "Could not check out $RELEASE_BRANCH."
+ 
+ 
+-  mssg "pull from origin/$MASTER_BRANCH into $MASTER_BRANCH"
++  mssg "pull from origin/$RELEASE_BRANCH into $RELEASE_BRANCH"
+ 
+   git_do fetch -q origin
+   git_do pull -q origin
+diff --git a/bin/af-nightbuild b/bin/af-nightbuild
+index 8836088..4515924 100644
+--- a/bin/af-nightbuild
++++ b/bin/af-nightbuild
+@@ -15,9 +15,6 @@ usage() {
+ 
+ 
+ cmd_default() {
+-
+-
+-  
+   NB_BRANCH=$NIGHTBUILD_PREFIX$VERSION_C.$VERSION_D
+ 
+   # sanity checks
 diff --git a/bin/af-release b/bin/af-release
-index 3e64122..54ed1fe 100644
+index 54ed1fe..3e64122 100644
 --- a/bin/af-release
 +++ b/bin/af-release
-@@ -22,6 +22,9 @@ cmd_default() {
+@@ -22,9 +22,6 @@ cmd_default() {
  
  
  cmd_create() {
-+
-+
-+  
+-
+-
+-  
    RELEASE_BRANCH="$RELEASE_PREFIX$VERSION_A.$(($VERSION_B + 1))"
    RELEASE_TAG="$VERSION_A.$(($VERSION_B + 1)).0.0"
  
 diff --git a/bin/af-sprintbuild b/bin/af-sprintbuild
-index f7f39e4..0f30f6b 100644
+index 0f30f6b..f7f39e4 100644
 --- a/bin/af-sprintbuild
 +++ b/bin/af-sprintbuild
-@@ -15,6 +15,9 @@ usage() {
+@@ -15,9 +15,6 @@ usage() {
  
  
  cmd_default() {
-+
-+
-+  
+-
+-
+-  
    SB_BRANCH=$SPRINTBUILD_PREFIX$VERSION_C
    SB_VERSION="$VERSION_A.$VERSION_B.$(($VERSION_C + 1))"
  
