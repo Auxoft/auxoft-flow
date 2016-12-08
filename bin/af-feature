@@ -47,10 +47,10 @@ cmd_start() {
   mssg "pull from $ORIGIN/$MASTER_BRANCH into $MASTER_BRANCH"
 
   # fetch and pull from origin
-  git_do fetch -q "$ORIGIN" || \
+  git_do fetch -q origin || \
     die "Could not fetch from $ORIGIN"
 
-  git_do pull -q "$ORIGIN" || \
+  git_do pull -q origin || \
     die "Could not pull from $ORIGIN"
 
   
@@ -88,10 +88,10 @@ cmd_finish() {
 
   mssg "pull from $ORIGIN/$MASTER_BRANCH into $MASTER_BRANCH"
 
-  git_do fetch -q "$ORIGIN" || \
+  git_do fetch -q origin || \
     die "Could not fetch from $ORIGIN"
 
-  git_do pull -q "$ORIGIN" || \
+  git_do pull -q origin || \
     die "Could not pull from $ORIGIN"
 
 
@@ -127,7 +127,7 @@ cmd_finish() {
 
   mssg "push $MASTER_BRANCH to $ORIGIN"
 
-  git_do push "$ORIGIN" "$MASTER_BRANCH" || \
+  git_do push origin "$MASTER_BRANCH" || \
     die "Pushing master to origin failed. Please run finish again to retry."
 
 
