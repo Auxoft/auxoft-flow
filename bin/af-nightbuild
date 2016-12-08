@@ -15,9 +15,6 @@ usage() {
 
 
 cmd_default() {
-
-
-  
   NB_BRANCH=$NIGHTBUILD_PREFIX$VERSION_C.$VERSION_D
 
   # sanity checks
