@@ -22,8 +22,6 @@ cmd_default() {
 
 
 cmd_create() {
-
-
   RELEASE_BRANCH="$RELEASE_PREFIX$VERSION_A.$(($VERSION_B + 1))"
   RELEASE_TAG="$VERSION_A.$(($VERSION_B + 1)).0.0"
 
