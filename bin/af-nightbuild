@@ -15,6 +15,8 @@ usage() {
 
 
 cmd_default() {
+  parse_args "$@"
+
   NB_BRANCH=$NIGHTBUILD_PREFIX$VERSION_C.$VERSION_D
 
   # sanity checks
