@@ -39,19 +39,17 @@ cmd_start() {
 
   FEATURE_BRANCH="$FEATURE_PREFIX$FEATURE_NAME"
 
-  # require_clean_working_tree
   require_current_branch $MASTER_BRANCH
   require_branch_absent $FEATURE_BRANCH
 
   
-  mssg "pull from $ORIGIN/$MASTER_BRANCH into $MASTER_BRANCH"
+  mssg "pull from origin/$MASTER_BRANCH into $MASTER_BRANCH"
 
-  # fetch and pull from origin
   git_do fetch -q origin || \
-    die "Could not fetch from $ORIGIN"
+    die "Could not fetch from origin"
 
   git_do pull -q origin || \
-    die "Could not pull from $ORIGIN"
+    die "Could not pull from origin"
 
   
   mssg "create feature branch: $FEATURE_BRANCH"
@@ -86,13 +84,13 @@ cmd_finish() {
     die "Could not check out $MASTER_BRANCH."
 
 
-  mssg "pull from $ORIGIN/$MASTER_BRANCH into $MASTER_BRANCH"
+  mssg "pull from origin/$MASTER_BRANCH into $MASTER_BRANCH"
 
   git_do fetch -q origin || \
-    die "Could not fetch from $ORIGIN"
+    die "Could not fetch from origin"
 
   git_do pull -q origin || \
-    die "Could not pull from $ORIGIN"
+    die "Could not pull from origin"
 
 
   mssg "checkout to $FEATURE_BRANCH"
@@ -125,7 +123,7 @@ cmd_finish() {
     die "There were merge conflicts."
 
 
-  mssg "push $MASTER_BRANCH to $ORIGIN"
+  mssg "push $MASTER_BRANCH to origin"
 
   git_do push origin "$MASTER_BRANCH" || \
     die "Pushing master to origin failed. Please run finish again to retry."
