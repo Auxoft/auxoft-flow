@@ -240,6 +240,54 @@ af_load_version() {
     export VERSION_D="0"
   fi
 
+  CURRENT_BRANCH=`git_current_branch`
+
+  if [[ $CURRENT_BRANCH == $MASTER_BRANCH ]]; then
+    export VERSION_SHORT=$VERSION
+    export VERSION_TYPE="dev"
+    export VERSION_SUFIX=""
+  elif [[ $CURRENT_BRANCH == $FEATURE_PREFIX* ]]; then
+
+  elif [[ $CURRENT_BRANCH == $HOTFIX_PREFIX* ]]; then
+
+  elif [[ $CURRENT_BRANCH == $RELEASE_PREFIX* ]]; then
+
+  elif [[ $CURRENT_BRANCH == $NIGHTBUILD_PREFIX* ]]; then
+
+  elif [[ $CURRENT_BRANCH == $SPRINTBUILD_PREFIX* ]]; then
+
+  elif [[ $CURRENT_BRANCH == $RCBUILD_PREFIX* ]]; then
+
+  elif [[ $CURRENT_BRANCH == $PATCHBUILD_PREFIX* ]]; then
+
+  elif [[ $CURRENT_BRANCH == $RELEASEBUILD_PREFIX* ]]; then
+
+  fi
+
+  if [[ $VERSION_SUFIX == "" ]]; then
+    middle_version=$short_version
+  else
+    middle_version=$short_version$subversion
+  fi
+
+  if [[ $version_name == "" ]]; then
+    full_version=$middle_version
+  else
+    full_version=$middle_version"+"$version_name
+  fi
+
+  export VERSION_LONG="0.0.0.0-nb0.0+alpha"
+
+#                    'dev'          - in master branch
+#                    'feature'      - in feature branch
+#                    'hotfix'       - in hotfix branch
+#                    'release'      - in release branch
+#                    'night'        - in nightbuild branch
+#                    'sprint'       - in sprintbuild branch
+#                    'rc'           - in rcbuild branch
+#                    'patch'        - in patchbuild branch
+#                    'release '     - in sprintbuild branch
+
 #   if    [[ $branch_prefix == $master_branch ]]; then
 #   echo "it's master branch"
 
@@ -305,17 +353,6 @@ af_load_version() {
 
 # fi
 
-# if [[ $subversion == "" ]]; then
-#   middle_version=$short_version
-# else
-#   middle_version=$short_version$subversion
-# fi
-
-# if [[ $version_name == "" ]]; then
-#   full_version=$middle_version
-# else
-#   full_version=$middle_version"+"$version_name
-# fi
 
   VERSION_SHORT="0.0.0.0"
   VERSION_LONG="0.0.0.0-nb0.0+alpha"
