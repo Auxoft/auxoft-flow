@@ -9,6 +9,9 @@
 #   > ./version-get
 #    0.2.26.1 beta
 #
+#
+#  file name: version-get
+
 
 
 if [ ! -e "./current.version" ]; then

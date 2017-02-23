@@ -170,6 +170,22 @@ git_is_branch_merged_into() {
 # Auxoft flow specific common functionality
 #
 
+hook_build() {
+  `readlink $AF_DIR/hooks/build` "$@"
+}
+
+hook_build_check() {
+  `readlink $AF_DIR/hooks/build-chech` "$@"
+}
+
+hook_version_get() {
+  `readlink $AF_DIR/hooks/version-get` "$@"
+}
+
+hook_version_set() {
+  `readlink $AF_DIR/hooks/version-set` "$@"
+}
+
 # check if this repo has been inited for Auxoft Flow
 af_has_version_configured() {
   git config --get auxoft.core.version >/dev/null 2>&1
@@ -213,7 +229,7 @@ af_load_settings() {
 
 af_load_version() {
   declare -a versions
-  versions=( `$AF_DIR/hooks/version-get` )
+  versions=( hook_version_get )
 
   export VERSION=${versions[0]}
   export VERSION_NAME=${versions[1]}
@@ -247,21 +263,37 @@ af_load_version() {
     export VERSION_TYPE="dev"
     export VERSION_SUFIX=""
   elif [[ $CURRENT_BRANCH == $FEATURE_PREFIX* ]]; then
-
+    export VERSION_SHORT=$VERSION
+    export VERSION_TYPE="dev"
+    export VERSION_SUFIX=""
   elif [[ $CURRENT_BRANCH == $HOTFIX_PREFIX* ]]; then
-
+    export VERSION_SHORT=$VERSION
+    export VERSION_TYPE="dev"
+    export VERSION_SUFIX=""
   elif [[ $CURRENT_BRANCH == $RELEASE_PREFIX* ]]; then
-
+    export VERSION_SHORT=$VERSION
+    export VERSION_TYPE="dev"
+    export VERSION_SUFIX=""
   elif [[ $CURRENT_BRANCH == $NIGHTBUILD_PREFIX* ]]; then
-
+    export VERSION_SHORT=$VERSION
+    export VERSION_TYPE="dev"
+    export VERSION_SUFIX=""
   elif [[ $CURRENT_BRANCH == $SPRINTBUILD_PREFIX* ]]; then
-
+    export VERSION_SHORT=$VERSION
+    export VERSION_TYPE="dev"
+    export VERSION_SUFIX=""
   elif [[ $CURRENT_BRANCH == $RCBUILD_PREFIX* ]]; then
-
+    export VERSION_SHORT=$VERSION
+    export VERSION_TYPE="dev"
+    export VERSION_SUFIX=""
   elif [[ $CURRENT_BRANCH == $PATCHBUILD_PREFIX* ]]; then
-
+    export VERSION_SHORT=$VERSION
+    export VERSION_TYPE="dev"
+    export VERSION_SUFIX=""
   elif [[ $CURRENT_BRANCH == $RELEASEBUILD_PREFIX* ]]; then
-
+    export VERSION_SHORT=$VERSION
+    export VERSION_TYPE="dev"
+    export VERSION_SUFIX=""
   fi
 
   if [[ $VERSION_SUFIX == "" ]]; then

@@ -15,7 +15,9 @@
 #                    'patch'        - in patchbuild branch
 #                    'release '     - in sprintbuild branch
 #   four param    - <full_version> = a.b.c.d[-sufix][+version_name]      0.2.30.0-sp29+beta, 0.3.1+beta, 0.2.26.9-nb26.9+beta
-
+#
+#
+#  file name: build
 
 
 echo " > building project"

@@ -7,6 +7,9 @@
 #
 #  example: 
 #   > ./version-set 0.2.26.1 beta
+#
+#
+#  file name: version-set
 
 
 echo $1 > "./current.version"
