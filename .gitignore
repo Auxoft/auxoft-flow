@@ -4,3 +4,11 @@
 /current.version
 
 /patches/
+
+/bin/hooks/build
+
+/bin/hooks/build-check
+
+/bin/hooks/version-get
+
+/bin/hooks/version-set
