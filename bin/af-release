@@ -120,7 +120,7 @@ cmd_test() {
 
 
   # build and deploy (from af-build-common)
-  af_build_all
+  # af_build_all
 
 
   # increment rc version
@@ -192,7 +192,7 @@ cmd_build() {
   ./bin/update-version
 
   # build and deploy (from af-build-common)
-  af_build_all
+  # af_build_all
 
   # increment rc version
   NEW_VERSION="$VERSION_A.$VERSION_B.$(($VERSION_C + 1)).1"

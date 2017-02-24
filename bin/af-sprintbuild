@@ -39,7 +39,7 @@ cmd_default() {
 
 
   # build and deploy
-  af_build_all
+  # af_build_all
 
 
   # increment next nightbuild version

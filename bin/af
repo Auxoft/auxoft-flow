@@ -33,7 +33,6 @@ main() {
 
   # load common functionality
   . "$AF_DIR/af-common"
-  . "$AF_DIR/af-build-common"
 
   # This environmental variable fixes non-POSIX getopt style argument
   # parsing, effectively breaking git-flow subcommand parsing on several
