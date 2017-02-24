@@ -177,24 +177,6 @@ git_is_branch_merged_into() {
 # Auxoft flow specific common functionality
 #
 
-hook_build() {
-  CMD=$(readlink $AF_DIR/hooks/build)
-  sh $CMD "$@"
-}
-
-hook_build_check() {
-  CMD=$(readlink $AF_DIR/hooks/build-chech)
-  sh $CMD "$@"
-}
-
-hook_version_get() {
-  `readlink $AF_DIR/hooks/version-get` "$@"
-}
-
-hook_version_set() {
-  `readlink $AF_DIR/hooks/version-set` "$@"
-}
-
 # check if this repo has been inited for Auxoft Flow
 af_has_version_configured() {
   git config --get auxoft.core.version >/dev/null 2>&1
