@@ -178,11 +178,13 @@ git_is_branch_merged_into() {
 #
 
 hook_build() {
-  `readlink $AF_DIR/hooks/build` "$@"
+  CMD=$(readlink $AF_DIR/hooks/build)
+  sh $CMD "$@"
 }
 
 hook_build_check() {
-  `readlink $AF_DIR/hooks/build-chech` "$@"
+  CMD=$(readlink $AF_DIR/hooks/build-chech)
+  sh $CMD "$@"
 }
 
 hook_version_get() {
