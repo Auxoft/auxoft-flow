@@ -46,10 +46,10 @@ cmd_start() {
   require_branch_absent $FEATURE_BRANCH
 
   
-  mssg "pull from origin/$MASTER_BRANCH into $MASTER_BRANCH"
+  # mssg "pull from origin/$MASTER_BRANCH into $MASTER_BRANCH"
 
-  git_do fetch -q origin
-  git_do pull -q origin
+  # git_do fetch -q origin
+  # git_do pull -q origin
 
   
   mssg "create feature branch: $FEATURE_BRANCH"
@@ -64,6 +64,7 @@ cmd_start() {
 
 
 cmd_finish() {
+  DEFINE_boolean force false 'force finish feature without check build' f
   parse_args "$@"
 
   FEATURE_BRANCH=`git_current_branch`
@@ -78,6 +79,14 @@ cmd_finish() {
 
   if git_is_branch_merged_into "$FEATURE_BRANCH" "$MASTER_BRANCH"; then
     die "There were merge conflicts from $FEATURE_BRANCH into $MASTER_BRANCH."
+  fi
+
+
+  if ! flag force; then
+    mssg "checking build"
+
+    hook_build_check "$VERSION_SHORT" "$VERSION_NAME" "$VERSION_TYPE" "$VERSION_LONG" || \
+      die "There were check build problem."
   fi
 
 
