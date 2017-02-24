@@ -45,7 +45,7 @@ cmd_start() {
   require_current_branch $MASTER_BRANCH
   require_branch_absent $FEATURE_BRANCH
 
-  
+
   # mssg "pull from origin/$MASTER_BRANCH into $MASTER_BRANCH"
 
   # git_do fetch -q origin
