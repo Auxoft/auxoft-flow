@@ -11,7 +11,7 @@ init() {
 
 usage() {
   echo "usage: af feature start <name>"
-  echo "       af feature finish"
+  echo "       af feature finish [-f]"
 }
 
 
