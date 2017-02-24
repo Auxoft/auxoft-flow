@@ -71,6 +71,13 @@ endswith() { [ "$1" != "${1%$2}" ]; }
 flag() { local FLAG; eval FLAG='$FLAGS_'$1; [ $FLAG -eq $FLAGS_TRUE ]; }
 noflag() { local FLAG; eval FLAG='$FLAGS_'$1; [ $FLAG -ne $FLAGS_TRUE ]; }
 
+parse_args() {
+  # parse options
+  FLAGS "$@" || exit $?
+  eval set -- "${FLAGS_ARGV}"
+}
+
+
 #
 # Git specific common functionality
 #
@@ -169,22 +176,6 @@ git_is_branch_merged_into() {
 #
 # Auxoft flow specific common functionality
 #
-
-hook_build() {
-  `readlink $AF_DIR/hooks/build` "$@"
-}
-
-hook_build_check() {
-  `readlink $AF_DIR/hooks/build-chech` "$@"
-}
-
-hook_version_get() {
-  `readlink $AF_DIR/hooks/version-get` "$@"
-}
-
-hook_version_set() {
-  `readlink $AF_DIR/hooks/version-set` "$@"
-}
 
 # check if this repo has been inited for Auxoft Flow
 af_has_version_configured() {
