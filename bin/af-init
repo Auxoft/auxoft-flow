@@ -6,13 +6,6 @@ usage() {
 }
 
 
-parse_args() {
-  # parse options
-  FLAGS "$@" || exit $?
-  eval set -- "${FLAGS_ARGV}"
-}
-
-
 cmd_default() {
   DEFINE_boolean force false 'force setting of af branches, even if already configured' f
   parse_args "$@"
