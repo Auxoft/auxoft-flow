@@ -300,23 +300,6 @@ af_load_version() {
   else
     VERSION_LONG=$VERSION_MIDDLE"+"$VERSION_NAME
   fi
-
-  # export VERSION_LONG="0.0.0.0-nb0.0+alpha"
-
-  echo $VERSION
-  echo $VERSION_NAME
-  echo $VERSION_SHORT
-  echo $VERSION_LONG
-  echo $VERSION_TYPE
-
-#                    'dev'          - in master branch
-#                    'feature'      - in feature branch
-#                    'hotfix'       - in hotfix branch
-#                    'release'      - in release branch
-#                    'night'        - in nightbuild branch
-#                    'sprint'       - in sprintbuild branch
-#                    'rc'           - in rcbuild branch
-#                    'patch'        - in patchbuild branch
 }
 
 af_update_version() {

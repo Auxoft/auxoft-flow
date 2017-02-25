@@ -31,7 +31,28 @@ This README would normally document whatever steps are necessary to get your app
 * Other community or team contact
 
 
+### Setup configure ###
 
+```
+# go to bin folder
+> cd <bin_project_folder>
+
+# add auxoft-flow of submodules 
+> git submodules add https://..../auxoft-flow
+
+# install af command to root project folder
+> cd <root_project_folder>
+> ./<auxoft_flow_folder>/bin/af install
+
+# add hooks to ./<auxoft_flow_folder>/bin/hooks folder
+
+# init auxoft
+> ./af init
+
+# or init auoxft and setup base app version
+> ./af init -v 1.1.1.1 -n beta
+
+```
 
 
 # auxoft-flow versions:

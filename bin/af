@@ -10,27 +10,31 @@ fi
 # This helps our Windows users, while not bothering our Unix users.
 export AF_DIR=$(dirname $0)
 
-usage() {
-  echo "usage: af <subcommand>"
-  echo
-  echo "Available subcommands are:"
-  echo "   install             Install af to your project, need run in root project folder (sampless:  ./bin/af/af install)."
-  echo "   init                Initialize a new git repo with support for the branching model."
-  echo "   feature             Manage your feature branches (run on master or feature/* branches)."
-  echo "   nightbuild          Create nightbuild (run on master branch)."
-  echo "   sprintbuild         Create sprintbuild and update files to next sprint (run on master branch)."
-  echo "   release             Manage release branch (run on master or release/*.* branches)."
-  echo "   hotfix              Manage your hotfix branches (run on master or hotfix/* branches)."
-  echo
-  echo "Try 'af <subcommand> help' for details."
+
+usage_init() {
+  FLAGS_HELP=`cat << EndOfMessage
+USAGE: af <subcommand>
+
+Try 'af <subcommand> -h' for details.
+
+subcommands:
+  install             Install af to your project, need run in root project folder (sampless:  ./bin/af/af install).
+  init                Initialize a new git repo with support for the branching model.
+  feature             Manage your feature branches (run on master or feature/* branches).
+  nightbuild          Create nightbuild (run on master branch).
+  sprintbuild         Create sprintbuild and update files to next sprint (run on master branch).
+  release             Manage release branch (run on master or release/*.* branches).
+  hotfix              Manage your hotfix branches (run on master or hotfix/* branches).
+  
+`
 }
 
-main() {
-  if [ $# -lt 1 ]; then
-    usage
-    exit 1
-  fi
+usage() {
+  flags_help
+}
 
+
+main() {
   # load common functionality
   . "$AF_DIR/af-common"
 
@@ -43,13 +47,18 @@ main() {
   . "$AF_DIR/shFlags/src/shflags"
   FLAGS_PARENT="af"
 
-  # allow user to request git action logging
+  usage_init
   DEFINE_boolean show_commands false 'show actions taken (git commands)' g
   DEFINE_boolean silent false 'silent mode running' s
 
   # do actual parsing
   FLAGS "$@" || exit $?
   eval set -- "${FLAGS_ARGV}"
+
+  if [ $# -lt 1 ] || flag help; then
+    usage
+    exit 1
+  fi
 
   # sanity checks
   SUBCOMMAND="$1"; shift
@@ -77,6 +86,7 @@ main() {
   fi
 
   # run the specified action
+  usage_init
   if [ $SUBACTION != "help" ] && [ $SUBCOMMAND != "init" ] && [ $SUBCOMMAND != "install" ] ; then
     init
   fi

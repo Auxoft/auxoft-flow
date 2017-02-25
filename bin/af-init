@@ -1,13 +1,22 @@
 #!/bin/sh
 
 
+usage_init() {
+  FLAGS_HELP=`cat << EndOfMessage
+USAGE: af [flags] init
+`
+}
+
 usage() {
-  echo "usage: af init [-f]"
+  flags_help
 }
 
 
 cmd_default() {
   DEFINE_boolean force false 'force setting of af branches, even if already configured' f
+  DEFINE_string version '' '<a.b.c.d>  version to initial to setup' v
+  DEFINE_string name '' '<version_name>  version name initial to setup' n
+
   parse_args "$@"
 
   if ! git rev-parse --git-dir >/dev/null 2>&1; then
@@ -44,6 +53,18 @@ cmd_default() {
   git config --local --add auxoft.prefix.rcbuild rcbuild/
   git config --local --add auxoft.prefix.patchbuild patchbuild/
   git config --local --add auxoft.prefix.releasebuild releasebuild/
+
+  af_load_version
+  if [[ "$FLAGS_name" != "" ]]; then
+    VERSION_NAME="$FLAGS_name"
+  fi
+  if [[ "$FLAGS_version" != "" ]]; then
+    VERSION="$FLAGS_version"
+  fi
+  af_update_version $VERSION $VERSION_NAME
+
+  echo $VERSION
+  echo $VERSION_NAME
 
   mssg "done"
 }
