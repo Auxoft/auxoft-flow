@@ -219,8 +219,10 @@ af_load_settings() {
 }
 
 af_load_version() {
+  AF_DIR=$(dirname $0)
+
   declare -a versions
-  versions=( hook_version_get )
+  versions=( `sh $AF_DIR/hooks/version-get` )
 
   export VERSION=${versions[0]}
   export VERSION_NAME=${versions[1]}
@@ -255,51 +257,57 @@ af_load_version() {
     export VERSION_SUFIX=""
   elif [[ $CURRENT_BRANCH == $FEATURE_PREFIX* ]]; then
     export VERSION_SHORT=$VERSION
-    export VERSION_TYPE="dev"
+    export VERSION_TYPE="feature"
     export VERSION_SUFIX=""
   elif [[ $CURRENT_BRANCH == $HOTFIX_PREFIX* ]]; then
     export VERSION_SHORT=$VERSION
-    export VERSION_TYPE="dev"
+    export VERSION_TYPE="hotfix"
     export VERSION_SUFIX=""
   elif [[ $CURRENT_BRANCH == $RELEASE_PREFIX* ]]; then
     export VERSION_SHORT=$VERSION
-    export VERSION_TYPE="dev"
+    export VERSION_TYPE="release"
     export VERSION_SUFIX=""
   elif [[ $CURRENT_BRANCH == $NIGHTBUILD_PREFIX* ]]; then
     export VERSION_SHORT=$VERSION
-    export VERSION_TYPE="dev"
-    export VERSION_SUFIX=""
+    export VERSION_TYPE="nightbuild"
+    export VERSION_SUFIX="-nb$VERSION_C.$VERSION_D"
   elif [[ $CURRENT_BRANCH == $SPRINTBUILD_PREFIX* ]]; then
     export VERSION_SHORT=$VERSION
-    export VERSION_TYPE="dev"
-    export VERSION_SUFIX=""
+    export VERSION_TYPE="sprintbuild"
+    export VERSION_SUFIX="-sp$(($VERSION_C - 1))"
   elif [[ $CURRENT_BRANCH == $RCBUILD_PREFIX* ]]; then
     export VERSION_SHORT=$VERSION
-    export VERSION_TYPE="dev"
-    export VERSION_SUFIX=""
+    export VERSION_TYPE="rcbuild"
+    export VERSION_SUFIX="-rc$VERSION_D"
   elif [[ $CURRENT_BRANCH == $PATCHBUILD_PREFIX* ]]; then
     export VERSION_SHORT=$VERSION
-    export VERSION_TYPE="dev"
-    export VERSION_SUFIX=""
+    export VERSION_TYPE="patchbuild"
+    export VERSION_SUFIX="-patch$VERSION_D"
   elif [[ $CURRENT_BRANCH == $RELEASEBUILD_PREFIX* ]]; then
-    export VERSION_SHORT=$VERSION
-    export VERSION_TYPE="dev"
+    export VERSION_SHORT=$VERSION_A.$VERSION_B.$VERSION_C
+    export VERSION_TYPE="releasebuild"
     export VERSION_SUFIX=""
   fi
 
   if [[ $VERSION_SUFIX == "" ]]; then
-    middle_version=$short_version
+    VERSION_MIDDLE=$VERSION_SHORT
   else
-    middle_version=$short_version$subversion
+    VERSION_MIDDLE=$VERSION_SHORT$VERSION_SUFIX
   fi
 
-  if [[ $version_name == "" ]]; then
-    full_version=$middle_version
+  if [[ $VERSION_NAME == "" ]]; then
+    VERSION_LONG=$VERSION_MIDDLE
   else
-    full_version=$middle_version"+"$version_name
+    VERSION_LONG=$VERSION_MIDDLE"+"$VERSION_NAME
   fi
 
-  export VERSION_LONG="0.0.0.0-nb0.0+alpha"
+  # export VERSION_LONG="0.0.0.0-nb0.0+alpha"
+
+  echo $VERSION
+  echo $VERSION_NAME
+  echo $VERSION_SHORT
+  echo $VERSION_LONG
+  echo $VERSION_TYPE
 
 #                    'dev'          - in master branch
 #                    'feature'      - in feature branch
@@ -309,83 +317,6 @@ af_load_version() {
 #                    'sprint'       - in sprintbuild branch
 #                    'rc'           - in rcbuild branch
 #                    'patch'        - in patchbuild branch
-#                    'release '     - in sprintbuild branch
-
-#   if    [[ $branch_prefix == $master_branch ]]; then
-#   echo "it's master branch"
-
-#   build_type="devbuild"
-#   short_version=$version
-#   subversion=""
-
-# elif  [[ $branch_prefix == $feature_prefix ]]; then
-#   echo "it's feature/* branch"
-
-#   build_type="featurebuild"
-#   short_version=$version
-#   subversion=""
-
-# elif  [[ $branch_prefix == $hotfix_prefix ]]; then
-#   echo "it's hotfix/* branch"
-
-#   build_type="hotfixbuild"
-#   short_version=$version
-#   subversion=""
-
-# elif  [[ $branch_prefix == $release_prefix ]]; then
-#   echo "it's release/* branch:"
-
-#   build_type="releasebuild"
-#   short_version=$version
-#   subversion=""
-
-# elif  [[ $branch_prefix == $nightbuild_prefix ]]; then
-#   echo "it's nightbuild/* branch:"
-
-#   build_type="nightbuild"
-#   short_version=$version
-#   subversion="-nb$version_c.$version_d"
-
-# elif  [[ $branch_prefix == $sprintbuild_prefix ]]; then
-#   echo "it's sprintbuild/* branch:"
-
-#   build_type="sprint"
-#   short_version=$version
-#   subversion="-sp$(($version_c - 1))"
-
-# elif  [[ $branch_prefix == $rcbuild_prefix ]]; then
-#   echo "it's rcbuild/* branch:"
-
-#   build_type="rcbuild"
-#   short_version=$version
-#   subversion="-rc$version_d"
-
-# elif  [[ $branch_prefix == $patchbuild_prefix ]]; then
-#   echo "it's patchbuild/* branch:"
-
-#   build_type="patchbuild"
-#   short_version=$version
-#   subversion="-patch$version_d"
-
-# elif  [[ $branch_prefix == $releasebuild_prefix ]]; then
-#   echo "it's releasebuild/* branch:"
-
-#   build_type="releasebuild"
-#   short_version="$version_a.$version_b.$version_c"
-#   subversion=""
-
-# fi
-
-
-  VERSION_SHORT="0.0.0.0"
-  VERSION_LONG="0.0.0.0-nb0.0+alpha"
-  VERSION_TYPE="night"
-
-# # echo short_version: $short_version
-# # echo middle_version: $middle_version
-# # echo full_version: $full_version
-# # echo build_type: $build_type
-
 }
 
 af_update_version() {
