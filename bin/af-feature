@@ -9,14 +9,18 @@ init() {
 }
 
 
-usage() {
-  echo "usage: af feature start <name>"
-  echo "       af feature finish [-f]"
+usage_init() {
+  FLAGS_HELP=`cat << EndOfMeesage
+USAGE: af feature start [flags] <name>
+       af feature finish [flags]
+ 
+`
 }
 
 
 cmd_default() {
-  cmd_help "$@"
+  usage
+  exit 0
 }
 
 
@@ -46,12 +50,6 @@ cmd_start() {
   require_branch_absent $FEATURE_BRANCH
 
 
-  # mssg "pull from origin/$MASTER_BRANCH into $MASTER_BRANCH"
-
-  # git_do fetch -q origin
-  # git_do pull -q origin
-
-  
   mssg "create feature branch: $FEATURE_BRANCH"
 
   # create branch
@@ -65,6 +63,7 @@ cmd_start() {
 
 cmd_finish() {
   DEFINE_boolean force false 'force finish feature without check build' f
+  
   parse_args "$@"
 
   FEATURE_BRANCH=`git_current_branch`
@@ -146,8 +145,3 @@ cmd_finish() {
   mssg "done"
 }
 
-
-cmd_help() {
-  usage
-  exit 0
-}

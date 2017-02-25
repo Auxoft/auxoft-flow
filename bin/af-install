@@ -1,15 +1,19 @@
 #!/bin/sh
 
 
-usage() {
-  echo "usage: af install"
+usage_init() {
+  FLAGS_HELP=`cat << EndOfMessage
+USAGE: af install [flags] 
+`
 }
 
 
 cmd_default() {
+  DEFINE_boolean force false 'force install af to root project, even if already installed' f
+  
   parse_args "$@"
 
-  if [ ! -e "./af" ]; then
+  if [ ! -e "./af" ] || flag force; then
     mssg "create ./af script in root project folder"
 
     echo "#!/bin/sh"             >  ./af
@@ -17,11 +21,12 @@ cmd_default() {
     echo $(dirname $0)'/af $@'   >> ./af
 
     chmod +x ./af
+    
+    mssg "done"
   else 
     warn "./af exist in root project folder"
+    warn "To force reinstall, use: af install -f"
   fi
-
-  mssg "done"
 }
 
 

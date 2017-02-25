@@ -9,14 +9,18 @@ init() {
 }
 
 
-usage() {
-  echo "usage: af hotfix start <name>"
-  echo "       af hotfix finish [-f]"
+usage_init() {
+  FLAGS_HELP=`cat << EndOfMessage
+USAGE: af hotfix start [flags] <name>
+       af hotfix finish [flags]
+  
+`
 }
 
 
 cmd_default() {
-  cmd_help "$@"
+  usage
+  exit 0
 }
 
 
@@ -45,12 +49,6 @@ cmd_start() {
   require_branch_absent $HOTFIX_BRANCH
 
   
-  # mssg "pull from origin/$RELEASE_PREFIX into $RELEASE_PREFIX"
-
-  # git_do fetch -q origin
-  # git_do pull -q origin
-
-
   mssg "create hotfix branch: $HOTFIX_BRANCH"
 
   # create branch
@@ -64,6 +62,7 @@ cmd_start() {
 
 cmd_finish() {
   DEFINE_boolean force false 'force finish hotfix without check build' f
+  
   parse_args "$@"
 
   HOTFIX_BRANCH=`git_current_branch`
@@ -224,8 +223,3 @@ cmd_finish() {
   mssg "done"
 }
 
-
-cmd_help() {
-  usage
-  exit 0
-}

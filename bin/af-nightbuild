@@ -8,8 +8,11 @@ init() {
 }
 
 
-usage() {
-  echo "usage: af nightbuild"
+usage_init() {
+  FLAGS_HELP=`cat << EndOfMessage
+USAGE:  af nightbuild [flags]
+ 
+`
 }
 
 
