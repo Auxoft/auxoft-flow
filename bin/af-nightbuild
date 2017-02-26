@@ -5,6 +5,7 @@ init() {
   require_git_repo
   require_af_initialized
   af_load_settings
+  af_load_version
 }
 
 
@@ -37,9 +38,6 @@ cmd_default() {
   mssg "create nightbuild branch: $NB_BRANCH"
 
   git_do checkout -b "$NB_BRANCH"
-
-  af_load_version
-
 
   mssg "building"
 
