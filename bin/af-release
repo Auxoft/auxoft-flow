@@ -36,6 +36,11 @@ cmd_create() {
   RELEASE_BRANCH="$RELEASE_PREFIX$VERSION_A.$(($VERSION_B + 1))"
   RELEASE_TAG="$VERSION_A.$(($VERSION_B + 1)).0.0"
 
+  echo $RELEASE_BRANCH
+  echo $RELEASE_TAG
+
+  exit
+
   # sanity checks
   require_clean_working_tree
   require_current_branch $MASTER_BRANCH

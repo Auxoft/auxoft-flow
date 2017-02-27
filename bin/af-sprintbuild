@@ -21,7 +21,7 @@ cmd_default() {
   parse_args "$@"
 
   SB_BRANCH=$SPRINTBUILD_PREFIX$VERSION_C
-  SB_VERSION="$VERSION_A.$VERSION_B.$(($VERSION_C + 1))"
+  SB_VERSION="$VERSION_A.$VERSION_B.$(($VERSION_C + 1)).0"
 
   # sanity checks
   require_clean_working_tree
