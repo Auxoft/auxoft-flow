@@ -21,7 +21,7 @@ cmd_default() {
   parse_args "$@"
 
   SB_BRANCH=$SPRINTBUILD_PREFIX$VERSION_C
-  SB_VERSION="$VERSION_A.$VERSION_B.$(($VERSION_C + 1)).0"
+  SB_TAG="$VERSION_A.$VERSION_B.$(($VERSION_C + 1)).0"
 
   # sanity checks
   require_clean_working_tree
@@ -76,13 +76,13 @@ cmd_default() {
       die "There were merge conflicts."
   fi
 
-  git_do tag -a -m "### tag: $SB_VERSION" "$SB_VERSION" "$MASTER_BRANCH" || \
+  git_do tag -a -m "### tag: $SB_TAG" "$SB_TAG" "$MASTER_BRANCH" || \
     die "Tagging failed. Please run finish again to retry."
 
   git_do push origin "$MASTER_BRANCH" || \
     die "Pushing master to origin failed. Please run finish again to retry."
 
-  git_do push origin "$SB_VERSION" || \
+  git_do push origin "$SB_TAG" || \
     die "Pushing tag to origin failed. Please run finish again to retry."
 
   git_do branch -d "$SB_BRANCH"
