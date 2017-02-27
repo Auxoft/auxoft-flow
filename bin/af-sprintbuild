@@ -11,8 +11,8 @@ init() {
 
 usage_init() {
   FLAGS_HELP=`cat << EndOfMessage
-USAGE: af sprintbuild [flags]
- 
+USAGE: af sprintbuild [-s] [-g] [-h]
+  
 `
 }
 

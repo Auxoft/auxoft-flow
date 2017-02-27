@@ -11,9 +11,13 @@ init() {
 
 usage_init() {
   FLAGS_HELP=`cat << EndOfMessage
-USAGE: af hotfix start [flags] <name>
-       af hotfix finish [flags]
+USAGE: af hotfix start [-s] [-g] [-h] <name>
+       af hotfix finish [-s] [-g] [-h] [-f]
   
+subcommans:
+  start           Create hotfix branch (run on release-*.* branch)."
+  finish          Finish hotfix branch (run on hotfix/* branch)."
+ 
 `
 }
 

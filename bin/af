@@ -13,7 +13,7 @@ export AF_DIR=$(dirname $0)
 
 usage_init() {
   FLAGS_HELP=`cat << EndOfMessage
-USAGE: af <subcommand>
+USAGE: af <subcommand> [-g] [-s] [-h]
 
 Try 'af <subcommand> -h' for details.
 
@@ -46,7 +46,7 @@ main() {
   # use the shFlags project to parse the command line arguments
   . "$AF_DIR/shFlags/src/shflags"
   FLAGS_PARENT="af"
-
+  
   usage_init
   DEFINE_boolean show_commands false 'show actions taken (git commands)' g
   DEFINE_boolean silent false 'silent mode running' s

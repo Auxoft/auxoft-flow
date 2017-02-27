@@ -9,15 +9,24 @@ init() {
 }
 
 
-usage() {
-  echo "usage: af release create    Create release branch (run on master branch)."
-  echo "       af release test      Create rcbuild or patchbuild (run on release-*.* branch)."
-  echo "       af release build     Create relaase build (run on release-*.* branch)."
+usage_init() {
+  FLAGS_HELP=`cat << EndOfMessage
+USAGE: af release create [-s] [-g] [-h]
+       af release prebuild [-s] [-g] [-h]
+       af release build [-s] [-g] [-h]
+
+subcommans:
+  create          Create release branch (run on master branch)."
+  prebuild        Create rcbuild or patchbuild (run on release-*.* branch)."
+  build           Create release build (run on release-*.* branch)."
+ 
+`
 }
 
 
 cmd_default() {
-  cmd_help "$@"
+  usage
+  exit 0
 }
 
 
@@ -244,8 +253,3 @@ cmd_build() {
   git_do branch -d "$RELEASEBUILD_BRANCH"
 }
 
-
-cmd_help() {
-  usage
-  exit 0
-}

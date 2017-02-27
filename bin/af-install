@@ -3,7 +3,8 @@
 
 usage_init() {
   FLAGS_HELP=`cat << EndOfMessage
-USAGE: af install [flags] 
+USAGE: af install [-g] [-s] [-h] [-f]
+ 
 `
 }
 

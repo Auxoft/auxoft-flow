@@ -11,7 +11,7 @@ init() {
 
 usage_init() {
   FLAGS_HELP=`cat << EndOfMessage
-USAGE:  af nightbuild [flags]
+USAGE:  af nightbuild [-s] [-g] [-h]  
  
 `
 }

@@ -3,7 +3,7 @@
 
 usage_init() {
   FLAGS_HELP=`cat << EndOfMessage
-USAGE: af init [flags] 
+USAGE: af init [-g] [-s] [-h] [-v <version>] [-n <version_name>]
  
 `
 }
@@ -11,8 +11,8 @@ USAGE: af init [flags]
 
 cmd_default() {
   DEFINE_boolean force false 'force setting of af branches, even if already configured' f
-  DEFINE_string version '' 'version to initial to setup (-v a.b.c.d)' v
-  DEFINE_string name '' 'version name initial to setup (-n <name>)' n
+  DEFINE_string version '' 'set version to initial (a.b.c.d)' v
+  DEFINE_string name '' 'set version name to initial' n
 
   parse_args "$@"
 
