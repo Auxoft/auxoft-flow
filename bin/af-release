@@ -49,20 +49,40 @@ cmd_create() {
   require_branch_absent $RELEASE_BRANCH
   require_tag_absent $RELEASE_TAG
 
-  # fetch and pull from origin
+  
+  mssg "pull from origin/$MASTER_BRANCH into $MASTER_BRANCH"
+
   git_do fetch -q origin
   git_do pull -q origin
 
-  # create branch
+  
+  mssg "create release branch: $RELEASE_BRANCH"
+
   git_do checkout -b "$RELEASE_BRANCH"
 
-  af_update_version $RELEASE_TAG $RELEASE_NAME
+
+  NEW_VERSION="$RELEASE_VERSION.0.1"
+  
+  mssg "set release version to $NEW_VERSION ($RELEASE_NAME)"
+  
+  af_update_version $NEW_VERSION $VERSION_NAME
   af_load_version
 
   git_do add -A
 
-  git_do commit -a -m "### set release version $RELEASE_TAG ($RELEASE_NAME)"
+  git_do commit -a -m "### set release version: $NEW_VERSION"
 
+  git_do tag -a -m "### tag: $RELEASE_TAG" "$RELEASE_TAG" "$RELEASE_BRANCH" || \
+    die "Tagging failed. Please run finish again to retry."
+
+  git_do push origin "$RELEASE_BRANCH" || \
+    die "Pushing release to origin failed. Please run finish again to retry."
+
+  git_do push origin "$RELEASE_TAG" || \
+    die "Pushing tag to origin failed. Please run finish again to retry."
+  
+  
+  mssg "return to master branch"
 
   git_do checkout "$MASTER_BRANCH"
 
@@ -77,50 +97,24 @@ cmd_create() {
   
   NEW_MASTER_VERSION="$MASTER_VERSION.$(($SPRINT_NUMBER + 1)).0"
 
-  af_update_version $NEW_MASTER_VERSION $VERSION_NAME
+
+  mssg "set new dev version in master branch: $NEW_MASTER_VERSION ($MASTER_NAME)"
+
+  af_update_version $NEW_MASTER_VERSION $MASTER_NAME
   af_load_version
 
-  exit 0
 
-  # update product version
-  ./bin/update-version
-
-  # add untracket files
   git_do add -A
 
-  # commit files
-  git_do commit -a -m "### create next dev version: $NEW_MASTER_VERSION"
+  git_do commit -a -m "### set next dev version: $NEW_MASTER_VERSION"
 
   git_do push origin "$MASTER_BRANCH" || \
     die "Pushing master to origin failed. Please run finish again to retry."
 
 
-  # preparation release version
+  mssg "return to relese branch"
+
   git_do checkout "$RELEASE_BRANCH"
-
-  af_load_version
-
-  # change version to release a.(b+1).0.1
-  NEW_VERSION="$VERSION_A.$(($VERSION_B + 1)).0.1"
-  af_update_version $NEW_VERSION $VERSION_NAME
-
-  # update product version
-  ./bin/update-version
-
-  # add untracket files
-  git_do add -A
-
-  # commit files
-  git_do commit -a -m "### update release version: $NEW_VERSION"
-
-  git_do tag -a -m "### tag: $RELEASE_TAG" "$RELEASE_TAG" "$RELEASE_BRANCH" || \
-    die "Tagging failed. Please run finish again to retry."
-
-  git_do push origin "$RELEASE_BRANCH" || \
-    die "Pushing release to origin failed. Please run finish again to retry."
-
-  git_do push origin "$RELEASE_TAG" || \
-    die "Pushing tag to origin failed. Please run finish again to retry."
 }
 
 
