@@ -33,14 +33,16 @@ cmd_default() {
 cmd_create() {
   parse_args "$@"
 
-  RELEASE_BRANCH="$RELEASE_PREFIX$VERSION_A.$(($VERSION_B + 1))"
-  RELEASE_TAG="$VERSION_A.$(($VERSION_B + 1)).0.0"
+  RELEASE_VERSION=$VERSION_A.$(($VERSION_B + 1))
+  RELEASE_NAME=$VERSION_NAME
+  SPRINT_NUMBER=$VERSION_C
 
-  echo $RELEASE_BRANCH
-  echo $RELEASE_TAG
+  question_short_version RELEASE_VERSION "release version" "$RELEASE_VERSION"
+  question_version_name RELEASE_NAME "release version name" "$RELEASE_NAME"
 
-  exit
-
+  RELEASE_BRANCH="$RELEASE_PREFIX$RELEASE_VERSION"
+  RELEASE_TAG="$RELEASE_VERSION.0.0"
+ 
   # sanity checks
   require_clean_working_tree
   require_current_branch $MASTER_BRANCH
@@ -54,18 +56,31 @@ cmd_create() {
   # create branch
   git_do checkout -b "$RELEASE_BRANCH"
 
+  af_update_version $RELEASE_TAG $RELEASE_NAME
+  af_load_version
 
-  # change master version to a.(b+2).(c+1).0
+  git_do add -A
+
+  git_do commit -a -m "### set release version $RELEASE_TAG ($RELEASE_NAME)"
+
+
   git_do checkout "$MASTER_BRANCH"
 
-  NEW_MASTER_VERSION="$VERSION_A.$(($VERSION_B + 2)).$(($VERSION_C + 1)).0"
+  MASTER_VERSION=$VERSION_A.$(($VERSION_B + 1))
+  MASTER_NAME=$VERSION_NAME
 
-  # set new version name
-  read -p "Please enter new version name: " new_name
-  VERSION_NAME=$new_name
+  question_short_version MASTER_VERSION "new master version" "$MASTER_VERSION"
+  question_version_name MASTER_NAME "new master version name" "$MASTER_NAME"
+
+  RELEASE_BRANCH="$RELEASE_PREFIX$RELEASE_VERSION"
+  RELEASE_TAG="$RELEASE_VERSION.0.0"
+  
+  NEW_MASTER_VERSION="$MASTER_VERSION.$(($SPRINT_NUMBER + 1)).0"
 
   af_update_version $NEW_MASTER_VERSION $VERSION_NAME
   af_load_version
+
+  exit 0
 
   # update product version
   ./bin/update-version
