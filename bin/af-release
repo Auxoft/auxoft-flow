@@ -118,7 +118,7 @@ cmd_create() {
 }
 
 
-cmd_test() {
+cmd_prebuild() {
   parse_args "$@"
 
   if [[ "$VERSION_C" == "0" ]]; then
