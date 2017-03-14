@@ -65,7 +65,7 @@ cmd_create() {
   
   mssg "set release version to $NEW_VERSION ($RELEASE_NAME)"
   
-  af_update_version $NEW_VERSION $VERSION_NAME
+  af_update_version $NEW_VERSION $RELEASE_NAME
   af_load_version
 
   git_do add -A
