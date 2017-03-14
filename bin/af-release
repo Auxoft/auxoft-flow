@@ -9,21 +9,6 @@ init() {
 }
 
 
-usage_init() {
-  FLAGS_HELP=`cat << EndOfMessage
-USAGE: af release create [-s] [-g] [-h]
-       af release prebuild [-s] [-g] [-h]
-       af release build [-s] [-g] [-h]
-
-subcommans:
-  create          Create release branch (run on master branch)."
-  prebuild        Create rcbuild or patchbuild (run on release-*.* branch)."
-  build           Create release build (run on release-*.* branch)."
- 
-`
-}
-
-
 cmd_default() {
   usage
   exit 0
@@ -68,6 +53,8 @@ cmd_create() {
   NEW_VERSION="$RELEASE_VERSION.0.1"
   
   mssg "set release version to $NEW_VERSION ($RELEASE_NAME)"
+
+  ./af hotfix start setup version
   
   af_update_version $NEW_VERSION $RELEASE_NAME
   af_load_version
@@ -76,15 +63,15 @@ cmd_create() {
 
   git_do commit -a -m "### set release version: $NEW_VERSION"
 
+  ./af hotfix finish -f -n
+
   git_do tag -a -m "### tag: $RELEASE_TAG" "$RELEASE_TAG" "$RELEASE_BRANCH" || \
     die "Tagging failed. Please run finish again to retry."
 
-  git_do push origin "$RELEASE_BRANCH" || \
-    die "Pushing release to origin failed. Please run finish again to retry."
-
   git_do push origin "$RELEASE_TAG" || \
     die "Pushing tag to origin failed. Please run finish again to retry."
-  
+
+  exit 0  
   
   mssg "return to master branch"
 
@@ -108,16 +95,16 @@ cmd_create() {
 
   mssg "set new dev version in master branch: $NEW_MASTER_VERSION ($MASTER_NAME)"
 
+  ./af feature start update version
+
   af_update_version $NEW_MASTER_VERSION $MASTER_NAME
   af_load_version
-
 
   git_do add -A
 
   git_do commit -a -m "### set next dev version: $NEW_MASTER_VERSION"
 
-  git_do push origin "$MASTER_BRANCH" || \
-    die "Pushing master to origin failed. Please run finish again to retry."
+  ./af hotfix finish -f
 
 
   mssg "return to relese branch"
@@ -132,7 +119,7 @@ cmd_prebuild() {
   if [[ "$VERSION_C" == "0" ]]; then
     BUILD_BRANCH="$RCBUILD_PREFIX$VERSION"
   else
-    BUILD_BRANCH="$HOTFIX_PREFIX$VERSION"
+    BUILD_BRANCH="$PATCHBUILD_PREFIX$VERSION"
   fi
   RELEASE_BRANCH=`git_current_branch`
 
@@ -273,5 +260,20 @@ cmd_build() {
     die "Pushing tag to origin failed. Please run finish again to retry."
 
   git_do branch -d "$RELEASEBUILD_BRANCH"
+}
+
+
+usage_init() {
+  FLAGS_HELP=`cat << EndOfMessage
+USAGE: af release create [-s] [-g] [-h]
+       af release prebuild [-s] [-g] [-h]
+       af release build [-s] [-g] [-h]
+
+subcommans:
+  create          Create release branch (run on master branch)."
+  prebuild        Create rcbuild or patchbuild (run on release-*.* branch)."
+  build           Create release build (run on release-*.* branch)."
+ 
+`
 }
 
