@@ -80,7 +80,7 @@ question_long_version() {
 
 question_version_name() {
 #  question_regex $1 "$2" "$3" "^_$"
-  question_regex $1 "$2" "$3" "^[a-zA-Z][a-zA-Z0-9]\{0,\}$"
+  question_regex $1 "$2" "$3" "^[a-zA-Z0-9]\{0,\}$"
 }
 
 
