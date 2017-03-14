@@ -61,7 +61,7 @@ question_regex() {
     elif [[ "$response" = "_" ]]; then
       response=""
     fi
-    echo $response
+    echo "$response"
     if expr "$response" : "$4" >/dev/null; then
       eval $result="'$response'"
       break
