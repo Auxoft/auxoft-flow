@@ -51,6 +51,12 @@ cmd_default() {
   git config --local --add auxoft.prefix.patchbuild patchbuild/
   git config --local --add auxoft.prefix.releasebuild releasebuild/
 
+  # git hooks
+  mkdir -p ./.git/hooks 1> /dev/null 2> /dev/null
+
+  cp -Rf "$(dirname $0)'/githooks" ./.git/hooks
+  chmod -R +x ./.git/hooks
+
   af_load_version
   if [[ "$FLAGS_name" != "" ]]; then
     VERSION_NAME="$FLAGS_name"
