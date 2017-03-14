@@ -34,11 +34,15 @@ cmd_create() {
   parse_args "$@"
 
   RELEASE_VERSION=$VERSION_A.$(($VERSION_B + 1))
-  RELEASE_NAME=$VERSION_NAME
+  if [[ "$VERSION_NAME" = "" ]]; then
+    RELEASE_NAME="_"
+  else
+    RELEASE_NAME=$VERSION_NAME
+  fi
   SPRINT_NUMBER=$VERSION_C
 
   question_short_version RELEASE_VERSION "release version" "$RELEASE_VERSION"
-  question_version_name RELEASE_NAME "release version name" "$RELEASE_NAME"
+  question_version_name RELEASE_NAME "release version name (_ for empty)" "$RELEASE_NAME"
 
   RELEASE_BRANCH="$RELEASE_PREFIX$RELEASE_VERSION"
   RELEASE_TAG="$RELEASE_VERSION.0.0"
@@ -87,10 +91,14 @@ cmd_create() {
   git_do checkout "$MASTER_BRANCH"
 
   MASTER_VERSION=$VERSION_A.$(($VERSION_B + 1))
-  MASTER_NAME=$VERSION_NAME
+  if [[ "$VERSION_NAME" = "" ]]; then
+    MASTER_NAME="_"
+  else
+    MASTER_NAME=$VERSION_NAME
+  fi
 
   question_short_version MASTER_VERSION "new master version" "$MASTER_VERSION"
-  question_version_name MASTER_NAME "new master version name" "$MASTER_NAME"
+  question_version_name MASTER_NAME "new master version name (_ for empty)" "$MASTER_NAME"
 
   RELEASE_BRANCH="$RELEASE_PREFIX$RELEASE_VERSION"
   RELEASE_TAG="$RELEASE_VERSION.0.0"
