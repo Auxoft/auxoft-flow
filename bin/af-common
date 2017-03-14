@@ -58,12 +58,13 @@ question_regex() {
     read -r -p "$2 [$3]: " response
     if [[ "$response" = "" ]]; then
       response="$3"
-#    elif [[ "$response" = "_" ]]; then
-#      response=""
-    fi
+   fi
     echo $response
     if expr "$response" : "$4" >/dev/null; then
       eval $result="'$response'"
+      break
+    elif [[ "$response" = "_" ]]; then
+      eval $result="''"
       break
     else
       echo "Bad format response."
@@ -80,8 +81,7 @@ question_long_version() {
 }
 
 question_version_name() {
-  question_regex $1 "$2" "$3" "^_$"
-#  question_regex $1 "$2" "$3" "^[a-zA-Z][a-zA-Z0-9]\{0,\}$"
+  question_regex $1 "$2" "$3" "^[a-zA-Z][a-zA-Z0-9]\{0,\}$"
 }
 
 
