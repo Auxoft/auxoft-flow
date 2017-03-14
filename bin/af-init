@@ -54,7 +54,7 @@ cmd_default() {
   # git hooks
   mkdir -p ./.git/hooks 1> /dev/null 2> /dev/null
 
-  cp -R "$(dirname $0)/githooks/*" ./.git/hooks
+  cp "$(dirname $0)/githooks/*" ./.git/hooks
   chmod -R +x ./.git/hooks
 
   af_load_version
