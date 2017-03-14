@@ -1,7 +1,7 @@
 #!/bin/bash
 
 
-local branch=$(git branch --no-color | grep '^\* ' | grep -v 'no branch' | sed 's/^* //g')
+branch=$(git branch --no-color | grep '^\* ' | grep -v 'no branch' | sed 's/^* //g')
 
 if [[ $branch == master ]]; then
   echo "Cannot commit on master"
