@@ -59,7 +59,6 @@ question_regex() {
     if [[ "$response" = "" ]]; then
       response="$3"
    fi
-    echo $response
     if expr "$response" : "$4" >/dev/null; then
       eval $result="'$response'"
       break
