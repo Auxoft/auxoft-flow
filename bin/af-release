@@ -71,8 +71,6 @@ cmd_create() {
   git_do push origin "$RELEASE_TAG" || \
     die "Pushing tag to origin failed. Please run finish again to retry."
 
-  exit 0  
-  
   mssg "return to master branch"
 
   git_do checkout "$MASTER_BRANCH"

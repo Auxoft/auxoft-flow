@@ -9,19 +9,6 @@ init() {
 }
 
 
-usage_init() {
-  FLAGS_HELP=`cat << EndOfMeesage
-USAGE: af feature start [-s] [-g] [-h] <name>
-       af feature finish [-s] [-g] [-h] [-f]
-
-subcommans:
-  start           Create feature branch (run on master branch)."
-  finish          Finish feature branch (run on feature/* branch)."
- 
-`
-}
-
-
 cmd_default() {
   usage
   exit 0
@@ -147,5 +134,18 @@ cmd_finish() {
 
 
   mssg "done"
+}
+
+
+usage_init() {
+  FLAGS_HELP=`cat << EndOfMeesage
+USAGE: af feature start [-s] [-g] [-h] <name>
+       af feature finish [-s] [-g] [-h] [-f]
+
+subcommans:
+  start           Create feature branch (run on master branch)."
+  finish          Finish feature branch (run on feature/* branch)."
+ 
+`
 }
 
