@@ -54,6 +54,7 @@ cmd_start() {
 cmd_finish() {
   DEFINE_boolean force false 'force finish hotfix without check build' f
   DEFINE_boolean nomaster false 'finish hotfix without create patch to master' n
+  DEFINE_boolean yesall false 'finish hotfix with auto create and apply patch to master' y
   
   parse_args "$@"
 
@@ -117,8 +118,10 @@ cmd_finish() {
 
   mkdir -p ./patches/applied 1> /dev/null 2> /dev/null
 
-  git_do format-patch "$RELEASE_BRANCH" --stdout > "$PATCH_FILE" || \
-    die "Could not create patch."
+  if ! flag nomaster; then
+    git_do format-patch "$RELEASE_BRANCH" --stdout > "$PATCH_FILE" || \
+      die "Could not create patch."
+  fi
 
 
   mssg "marge from $RELEASE_BRANCH into $HOTFIX_BRANCH"
@@ -157,7 +160,7 @@ cmd_finish() {
 
   if ! flag nomaster; then
 
-    if question_Yn "Do you apply '$PATCH_FILE' to master?"; then
+    if flag yesall  -o  question_Yn "Do you apply '$PATCH_FILE' to master?"; then
       mssg "checkout to $MASTER_BRANCH"
 
       git_do checkout "$MASTER_BRANCH" || \
@@ -185,7 +188,7 @@ cmd_finish() {
       if [[ "$APPLIED_PATCH" = "1" ]]; then
         mv "$PATCH_FILE" "$APPLIED_PATCH_FILE"
 
-        if question_Yn "Do you finish feature '$PATCH_FEATURE_NAME'?"; then
+        if flag yesall  -o  question_Yn "Do you finish feature '$PATCH_FEATURE_NAME'?"; then
           mssg "commit applied files"
 
           git_do add -A
@@ -196,7 +199,7 @@ cmd_finish() {
             die "Could not finish feature $PATCH_FEATURE_NAME."
         fi
 
-        if question_Yn "Do you remove '$APPLIED_PATCH_FILE' file?"; then
+        if flag yesall  -o  question_Yn "Do you remove '$APPLIED_PATCH_FILE' file?"; then
           mssg "remove patch file $APPLIED_PATCH_FILE"
 
           rm -r $APPLIED_PATCH_FILE 1> /dev/null 2> /dev/null
