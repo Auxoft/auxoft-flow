@@ -102,7 +102,7 @@ cmd_create() {
 
   git_do commit -a -m "### set next dev version: $NEW_MASTER_VERSION"
 
-  ./af hotfix finish -f
+  ./af feature finish -f
 
 
   mssg "return to relese branch"
