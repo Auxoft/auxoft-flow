@@ -31,6 +31,7 @@ cmd_default() {
 
   git_do checkout -b "$NB_BRANCH"
 
+
   mssg "building"
 
   $AF_DIR/hooks/build "$VERSION_SHORT" "$VERSION_NAME" "$VERSION_TYPE" "$VERSION_LONG" || \
