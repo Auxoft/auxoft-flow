@@ -1,6 +1,14 @@
 #!/bin/bash
 
-if test $(git rev-parse --abbrev-ref HEAD) = "master" ; then 
+
+local branch=$(git branch --no-color | grep '^\* ' | grep -v 'no branch' | sed 's/^* //g')
+
+if [[ $branch == master ]]; then
+  echo "Cannot commit on master"
+  exit 1
+fi
+
+if [[ $branch == release/* ]]; then
   echo "Cannot commit on master"
   exit 1
 fi
