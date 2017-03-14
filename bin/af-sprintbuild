@@ -9,14 +9,6 @@ init() {
 }
 
 
-usage_init() {
-  FLAGS_HELP=`cat << EndOfMessage
-USAGE: af sprintbuild [-s] [-g] [-h]
-  
-`
-}
-
-
 cmd_default() {
   parse_args "$@"
 
@@ -92,4 +84,12 @@ cmd_default() {
 cmd_help() {
   usage
   exit 0
+}
+
+
+usage_init() {
+  FLAGS_HELP=`cat << EndOfMessage
+USAGE: af sprintbuild [-s] [-g] [-h]
+  
+`
 }

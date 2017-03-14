@@ -1,14 +1,6 @@
 #!/bin/sh
 
 
-usage_init() {
-  FLAGS_HELP=`cat << EndOfMessage
-USAGE: af init [-g] [-s] [-h] [-v <version>] [-n <version_name>]
- 
-`
-}
-
-
 cmd_default() {
   DEFINE_boolean force false 'force setting of af branches, even if already configured' f
   DEFINE_string version '' 'set version to initial (a.b.c.d)' v
@@ -74,4 +66,12 @@ cmd_default() {
 cmd_help() {
   usage
   exit 0
+}
+
+
+usage_init() {
+  FLAGS_HELP=`cat << EndOfMessage
+USAGE: af init [-g] [-s] [-h] [-v <version>] [-n <version_name>]
+ 
+`
 }

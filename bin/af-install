@@ -1,14 +1,6 @@
 #!/bin/sh
 
 
-usage_init() {
-  FLAGS_HELP=`cat << EndOfMessage
-USAGE: af install [-g] [-s] [-h] [-f]
- 
-`
-}
-
-
 cmd_default() {
   DEFINE_boolean force false 'force install af to root project, even if already installed' f
   
@@ -34,4 +26,12 @@ cmd_default() {
 cmd_help() {
   usage
   exit 0
+}
+
+
+usage_init() {
+  FLAGS_HELP=`cat << EndOfMessage
+USAGE: af install [-g] [-s] [-h] [-f]
+ 
+`
 }

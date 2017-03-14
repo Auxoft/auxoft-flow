@@ -6,28 +6,11 @@ if [ "$DEBUG" = "yes" ]; then
   set -x
 fi
 
+
 # The sed expression here replaces all backslashes by forward slashes.
 # This helps our Windows users, while not bothering our Unix users.
 export AF_DIR=$(dirname $0)
 
-
-usage_init() {
-  FLAGS_HELP=`cat << EndOfMessage
-USAGE: af <subcommand> [-g] [-s] [-h]
-
-Try 'af <subcommand> -h' for details.
-
-subcommands:
-  install             Install af to your project, need run in root project folder (sampless:  ./bin/af/af install).
-  init                Initialize a new git repo with support for the branching model.
-  feature             Manage your feature branches (run on master or feature/* branches).
-  nightbuild          Create nightbuild (run on master branch).
-  sprintbuild         Create sprintbuild and update files to next sprint (run on master branch).
-  release             Manage release branch (run on master or release/*.* branches).
-  hotfix              Manage your hotfix branches (run on master or hotfix/* branches).
-  
-`
-}
 
 usage() {
   flags_help
@@ -92,5 +75,25 @@ main() {
   fi
   cmd_$SUBACTION "$@"
 }
+
+
+usage_init() {
+  FLAGS_HELP=`cat << EndOfMessage
+USAGE: af <subcommand> [-g] [-s] [-h]
+
+Try 'af <subcommand> -h' for details.
+
+subcommands:
+  install             Install af to your project, need run in root project folder (sampless:  ./bin/af/af install).
+  init                Initialize a new git repo with support for the branching model.
+  feature             Manage your feature branches (run on master or feature/* branches).
+  nightbuild          Create nightbuild (run on master branch).
+  sprintbuild         Create sprintbuild and update files to next sprint (run on master branch).
+  release             Manage release branch (run on master or release/*.* branches).
+  hotfix              Manage your hotfix branches (run on master or hotfix/* branches).
+  
+`
+}
+
 
 main "$@"
