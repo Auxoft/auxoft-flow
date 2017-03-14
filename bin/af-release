@@ -128,7 +128,7 @@ cmd_prebuild() {
   require_tag_absent "$VERSION"
 
 
-  mssg "pull from origin/$MASTER_BRANCH into $MASTER_BRANCH"
+  mssg "pull from origin/$RELEASE_BRANCH into $RELEASE_BRANCH"
 
   git_do fetch -q origin
   git_do pull -q origin
