@@ -56,7 +56,7 @@ cmd_default() {
 
   echo "$(dirname $0)/githooks"
 
-  cp -R "$(dirname $0)'/githooks" ./.git/hooks
+  cp -R "$(dirname $0)/githooks" ./.git/hooks
   chmod -R +x ./.git/hooks
 
   af_load_version
