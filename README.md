@@ -55,6 +55,28 @@ This README would normally document whatever steps are necessary to get your app
 ```
 
 
+### Branches names ###
+
+* master:                      master
+
+* features:                    master -> feature/<feature_name> -> master
+
+* nightbuilds:                 master -> nightbuild/<c>.<d> -> master
+
+* sprintbuilds:                master -> sprintbuild/<c> -> master
+
+* releases:                    master -> release/<a>.<b>
+
+* hotfixes:                    release/<a>.<b> -> hotfix/<hotfix_name> -> release/<a>.<b>
+
+* release candidate builds:    release/<a>.<b> -> rcbuild/<a>.<b>.<c>.<d> -> release/<a>.<b>
+
+* patch builds:                release/<a>.<b> -> patchbuild/<a>.<b>.<c>.<d> -> release/<a>.<b>
+
+* release builds:              release/<a>.<b> -> release/<a>.<b>.<c> -> release/<a>.<b>
+
+
+
 # auxoft-flow versions:
 #
 # short_version="a.b.c.d"
