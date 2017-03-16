@@ -193,10 +193,10 @@ cmd_build() {
   parse_args "$@"
 
   RELEASEBUILD_VERSION="$VERSION_A.$VERSION_B.$(($VERSION_C + 1))"
-  RELEASE_VERSION="$VERSION_A.$VERSION_B.$(($VERSION_C + 2)).0"
+  NEW_RELEASE_VERSION="$VERSION_A.$VERSION_B.$(($VERSION_C + 2)).1"
+  NEW_RELEASE_TAG="$VERSION_A.$VERSION_B.$(($VERSION_C + 2)).0"
 
   RELEASEBUILD_BRANCH=$RELEASEBUILD_PREFIX$RELEASEBUILD_VERSION
-
   RELEASE_BRANCH=`git_current_branch`
 
   # sanity checks
@@ -204,20 +204,21 @@ cmd_build() {
   require_current_branch_prefix $RELEASE_PREFIX
   require_branch_absent $RELEASEBUILD_BRANCH
   require_tag_absent "$RELEASEBUILD_VERSION"
-  require_tag_absent "$RELEASE_VERSION"
+  require_tag_absent "$NEW_RELEASE_TAG"
 
-  # fetch and pull from origin
+
+  mssg "pull from origin/$RELEASE_BRANCH into $RELEASE_BRANCH"
+
   git_do fetch -q origin
   git_do pull -q origin
 
-  # create branch
+
+  mssg "create releasebuild branch: $RELEASEBUILD_BRANCH"
+
   git_do checkout -b "$RELEASEBUILD_BRANCH"
 
-  NEW_VERSION="$VERSION_A.$VERSION_B.$(($VERSION_C + 1)).0"
-  af_update_version $NEW_VERSION $VERSION_NAME
-  af_load_version
 
-  ./bin/update-version
+  af_update_version $RELEASEBUILD_VERSION $VERSION_NAME
 
   # build and deploy (from af-build-common)
   # af_build_all
@@ -226,6 +227,13 @@ cmd_build() {
   NEW_VERSION="$VERSION_A.$VERSION_B.$(($VERSION_C + 1)).1"
   af_update_version $NEW_VERSION $VERSION_NAME
   af_load_version
+
+
+  mssg "building"
+
+  $AF_DIR/hooks/build "$VERSION_SHORT" "$VERSION_NAME" "$VERSION_TYPE" "$VERSION_LONG" || \
+    die "There were build problem."
+
 
   # add untracket files
   git_do add -A
@@ -249,15 +257,15 @@ cmd_build() {
     die "Tagging failed. Please run finish again to retry."
 
   # update product version
-  ./bin/update-version
+  af_update_version $NEW_RELEASE_VERSION $VERSION_NAME
 
-  add untracket files
+  # add untracket files
   git_do add -A
 
-  commit files
-  git_do commit -a -m "### update release version: $NEW_VERSION"
+  # commit files
+  git_do commit -a -m "### update release version: $NEW_RELEASE_VERSION"
 
-  git_do tag -a -m "### tag: $RELEASE_VERSION" "$RELEASE_VERSION" "$RELEASE_BRANCH" || \
+  git_do tag -a -m "### tag: $NEW_RELEASE_TAG" "$NEW_RELEASE_TAG" "$RELEASE_BRANCH" || \
     die "Tagging failed. Please run finish again to retry."
 
   git_do push origin "$RELEASE_BRANCH" || \
@@ -266,7 +274,7 @@ cmd_build() {
   git_do push origin "$RELEASEBUILD_VERSION" || \
     die "Pushing tag to origin failed. Please run finish again to retry."
 
-  git_do push origin "$RELEASE_VERSION" || \
+  git_do push origin "$NEW_RELEASE_TAG" || \
     die "Pushing tag to origin failed. Please run finish again to retry."
 
   git_do branch -d "$RELEASEBUILD_BRANCH"
