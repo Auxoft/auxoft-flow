@@ -3,6 +3,8 @@
 
 /patches/
 
+/bin/hooks/run
+
 /bin/hooks/build
 
 /bin/hooks/build-check
