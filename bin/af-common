@@ -294,10 +294,6 @@ af_load_version() {
     export VERSION_SHORT=$VERSION
     export VERSION_TYPE="hotfix"
     export VERSION_SUFIX=""
-  elif [[ $CURRENT_BRANCH == $RELEASE_PREFIX* ]]; then
-    export VERSION_SHORT=$VERSION
-    export VERSION_TYPE="release"
-    export VERSION_SUFIX=""
   elif [[ $CURRENT_BRANCH == $NIGHTBUILD_PREFIX* ]]; then
     export VERSION_SHORT=$VERSION
     export VERSION_TYPE="nightbuild"
@@ -317,6 +313,10 @@ af_load_version() {
   elif [[ $CURRENT_BRANCH == $RELEASEBUILD_PREFIX* ]]; then
     export VERSION_SHORT=$VERSION_A.$VERSION_B.$VERSION_C
     export VERSION_TYPE="releasebuild"
+    export VERSION_SUFIX=""
+  elif [[ $CURRENT_BRANCH == $RELEASE_PREFIX* ]]; then
+    export VERSION_SHORT=$VERSION
+    export VERSION_TYPE="release"
     export VERSION_SUFIX=""
   fi
 
