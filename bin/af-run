@@ -1,15 +1,17 @@
 #!/bin/sh
 
 
-cmd_default() {
-  parse_args "$@"
-  
-  if [ "$1" == "" ] || { echo "$1" | grep -q "^-"; } then
-	usage
-    exit 1
-  fi
+init() {
+  require_git_repo
+  require_af_initialized
+  af_load_settings
+  af_load_version
+}
 
-  $AF_DIR/hooks/run "$@"
+
+cmd_default() {
+  usage
+  exit 0
 }
 
 
@@ -21,10 +23,21 @@ cmd_help() {
 
 usage_init() {
   FLAGS_HELP=`cat << EndOfMessage
-USAGE: af run <command>
+USAGE: af run <subcommand>
 
-  command is specific to your project.
-  if you want to use run subcommand to you need create ./bin/hooks/run script
- 
-`
+Try 'af run <subcommand> -h' for details.
+
+  subcommand is specific to your project.
+  
+  If you want to use run subcommand to you need create ./bin/hooks/run script, please see in ./bin/hooks/run.example
+
+EndOfMessage`
 }
+
+
+if [ ! -e "$AF_DIR/hooks/run" ]; then
+  usage
+  exit 1
+fi
+
+. "$AF_DIR/hooks/run"

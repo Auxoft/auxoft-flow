@@ -54,12 +54,13 @@ main() {
   # run command
   . "$AF_DIR/af-$SUBCOMMAND"
   FLAGS_PARENT="af $SUBCOMMAND"
+  usage_init
 
   # test if the first argument is a flag (i.e. starts with '-')
   # in that case, we interpret this arg as a flag for the default
   # command
   SUBACTION="default"
-  if [ "$1" != "" ] && [ "$SUBCOMMAND" != "run" ] && { ! echo "$1" | grep -q "^-"; } then
+  if [ "$1" != "" ] && { ! echo "$1" | grep -q "^-"; } then
     SUBACTION="$1"; shift
   fi
   if ! type "cmd_$SUBACTION" >/dev/null 2>&1; then
@@ -69,8 +70,7 @@ main() {
   fi
  
   # run the specified action
-  usage_init
-  if [ $SUBCOMMAND != "init" ] && [ $SUBCOMMAND != "install" ] && [ $SUBCOMMAND != "run" ] ; then
+  if [ $SUBCOMMAND != "init" ] && [ $SUBCOMMAND != "install" ] ; then
     init
   fi
   cmd_$SUBACTION "$@"
@@ -93,7 +93,7 @@ subcommands:
   hotfix              Manage your hotfix branches (run on master or hotfix/* branches).
   run                 Run external specific to your project commands.
   
-`
+EndOfMessage`
 }
 
 

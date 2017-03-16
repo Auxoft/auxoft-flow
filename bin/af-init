@@ -73,5 +73,5 @@ usage_init() {
   FLAGS_HELP=`cat << EndOfMessage
 USAGE: af init [-g] [-s] [-h] [-v <version>] [-n <version_name>]
  
-`
+EndOfMessage`
 }
