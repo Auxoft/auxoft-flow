@@ -30,6 +30,7 @@ cmd_default() {
   mssg "create nightbuild branch: $NB_BRANCH"
 
   git_do checkout -b "$NB_BRANCH"
+  af_load_version
 
 
   mssg "building"
@@ -41,6 +42,7 @@ cmd_default() {
   # increment nightbuild version
   NEW_VERSION=$VERSION_A.$VERSION_B.$VERSION_C.$(($VERSION_D + 1))
   af_update_version $NEW_VERSION $VERSION_NAME
+  af_load_version
 
 
   # add untracket files
