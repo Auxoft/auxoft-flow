@@ -4,6 +4,11 @@
 cmd_default() {
   parse_args "$@"
   
+  if [ "$1" == "" ] || { echo "$1" | grep -q "^-"; } then
+	usage
+    exit 1
+  fi
+
   $AF_DIR/hooks/run "$@"
 }
 

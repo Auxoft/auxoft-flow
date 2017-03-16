@@ -70,7 +70,7 @@ main() {
  
   # run the specified action
   usage_init
-  if [ $SUBCOMMAND != "init" ] && [ $SUBCOMMAND != "install" ] ; then
+  if [ $SUBCOMMAND != "init" ] && [ $SUBCOMMAND != "install" ] && [ $SUBCOMMAND != "run" ] ; then
     init
   fi
   cmd_$SUBACTION "$@"
