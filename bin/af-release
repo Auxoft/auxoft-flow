@@ -292,6 +292,6 @@ subcommans:
   prebuild        Create rcbuild or patchbuild (run on release-*.* branch)."
   build           Create release build (run on release-*.* branch)."
  
-`
+EndOfMessage`
 }
 

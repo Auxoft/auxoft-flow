@@ -1,19 +1,17 @@
 #!/bin/sh
 
 
-# run external specific to yuor project commands:
-#   first param   - <command>
-#   others params - others params
-#
-#  example: 
-#   > ./version-set 0.2.26.1 beta
-#
-#
-#  file name: run
+cmd_test() {
+  echo "test command"
+}
 
 
-echo " > run external command:"
-echo " > " $0 $@
-echo " > done"
+usage_init() {
+  FLAGS_HELP=`cat << EndOfMessage
+USAGE: af run <subcommand>
 
-exit 0
+subcommands:
+  test             run test subcommand.
+ 
+`
+}

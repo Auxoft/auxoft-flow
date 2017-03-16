@@ -148,6 +148,6 @@ subcommans:
   start           Create feature branch (run on master branch)."
   finish          Finish feature branch (run on feature/* branch)."
  
-`
+EndOfMessage`
 }
 

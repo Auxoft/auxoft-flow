@@ -230,6 +230,6 @@ subcommans:
   start           Create hotfix branch (run on release-*.* branch)."
   finish          Finish hotfix branch (run on hotfix/* branch)."
  
-`
+EndOfMessage`
 }
 
