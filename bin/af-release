@@ -222,19 +222,17 @@ cmd_build() {
   af_update_version $RELEASEBUILD_VERSION $VERSION_NAME
   af_load_version
 
-  # build and deploy (from af-build-common)
-  # af_build_all
-
-  # increment rc version
-  NEW_VERSION="$VERSION_A.$VERSION_B.$(($VERSION_C + 1)).1"
-  af_update_version $NEW_VERSION $VERSION_NAME
-  af_load_version
-
 
   mssg "building"
 
   $AF_DIR/hooks/build "$VERSION_SHORT" "$VERSION_NAME" "$VERSION_TYPE" "$VERSION_LONG" || \
     die "There were build problem."
+
+
+  # increment rc version
+  NEW_VERSION="$VERSION_A.$VERSION_B.$(($VERSION_C + 1)).1"
+  af_update_version $NEW_VERSION $VERSION_NAME
+  af_load_version
 
 
   # add untracket files
