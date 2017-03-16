@@ -1,0 +1,25 @@
+#!/bin/sh
+
+
+cmd_default() {
+  parse_args "$@"
+  
+  $AF_DIR/hooks/run "$@"
+}
+
+
+cmd_help() {
+  usage
+  exit 0
+}
+
+
+usage_init() {
+  FLAGS_HELP=`cat << EndOfMessage
+USAGE: af run <command>
+
+  command is specific to your project.
+  if you want to use run subcommand to you need create ./bin/hooks/run script
+ 
+`
+}
