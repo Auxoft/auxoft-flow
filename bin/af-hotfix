@@ -158,6 +158,7 @@ cmd_finish() {
 
   git_do branch -D "$HOTFIX_BRANCH"
 
+
   if ! flag nomaster; then
 
     if flag yesall  -o  question_Yn "Do you apply '$PATCH_FILE' to master?"; then
