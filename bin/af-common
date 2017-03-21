@@ -123,10 +123,10 @@ git_do() {
   if flag show_commands; then
     info "`echo "git $@"`"
   fi
-  if flag silent; then
-    git "$@" &> /dev/null
+  if flag show_commands; then
+    git "$@" 1>clr_red 2>clr_brown
   else
-    git "$@"
+    git "$@" &> /dev/null
   fi
 }
 
