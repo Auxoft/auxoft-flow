@@ -53,15 +53,10 @@ function clr_layer
     CLR_SWITCHES=""
     ARGS=("$@")
 
-    echo "------------"
-    echo ${ARGS[@]}
-    echo "------------"
-
     # iterate over arguments in reverse
     for ((i=$#; i>=0; i--)); do
         ARG=${ARGS[$i]}
 
-        echo "wwwww:  " $ARG
         # set CLR_VAR as last argtype
         firstletter=${ARG:0:1}
 
@@ -85,8 +80,6 @@ function clr_layer
             fi
         fi
     done
-
-    echo $CLR_STACK
 
     # pass stack and color var to escape function
     clr_escape "$CLR_STACK" $1;
