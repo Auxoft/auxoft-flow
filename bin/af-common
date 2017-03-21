@@ -124,7 +124,7 @@ git_do() {
     info "`echo "git $@"`"
   fi
   if flag show_commands; then
-    git "$@" 1>clr_red 2>clr_brown
+    git "$@"
   else
     git "$@" &> /dev/null
   fi
