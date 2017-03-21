@@ -22,7 +22,7 @@ cmd_default() {
   declare -a push_branches
   push_branches+=( `git_current_branch` )
 
-  current_branche=( `git_current_branch` )
+  current_branch=( `git_current_branch` )
   local_branches=( `git_local_branches` )
   remote_branches=( `git_remote_branches` )
 
@@ -56,7 +56,7 @@ cmd_default() {
   push_branches=( $(echo "${push_branches[@]}" | tr ' ' '\n' | sort -u | tr '\n' ' ') )
 
   for branch in ${push_branches[@]}; do
-    if ! [[ $branch == $current_branche ]] ; then
+    if ! [[ $branch == $current_branch ]] ; then
       if ! flag force && ! has "$ORIGIN/$branch" $(git_remote_branches) ; then
         push_branches=( "${push_branches[@]/$branch}" )
       fi
@@ -68,7 +68,9 @@ cmd_default() {
 
     mssg "create release branch: $branch"
 
-    git_do checkout -b "$branch"
+    if ! [[ $branch == $current_branch ]] ; then
+      git_do checkout "$branch"
+    fi
   
     if has "$ORIGIN/$branch" $(git_remote_branches) ; then
       mssg "pull from origin/$branch into $branch"
