@@ -237,6 +237,7 @@ af_is_initialized() {
 
 # loading settings that can be overridden using git config
 af_load_settings() {
+  export ORIGIN="origin"
   export DOT_GIT_DIR=$(git rev-parse --git-dir 2>/dev/null)
   export MASTER_BRANCH=$(git config --get auxoft.branch.master)
   export FEATURE_PREFIX=$(git config --get auxoft.prefix.feature)

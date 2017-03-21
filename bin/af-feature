@@ -143,6 +143,7 @@ usage_init() {
   FLAGS_HELP=`cat << EndOfMeesage
 USAGE: af feature start [-s] [-g] [-h] <name>
        af feature finish [-s] [-g] [-h] [-f]
+       af feature update [-s] [-g] [-h]
 
 subcommans:
   start           Create feature branch (run on master branch)."

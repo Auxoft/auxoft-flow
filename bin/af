@@ -91,6 +91,7 @@ subcommands:
   sprintbuild         Create sprintbuild and update files to next sprint (run on master branch).
   release             Manage release branch (run on master or release/*.* branches).
   hotfix              Manage your hotfix branches (run on master or hotfix/* branches).
+  pull                Pull current or all release/* and master branches
   run                 Run external specific to your project commands.
   
 EndOfMessage`
