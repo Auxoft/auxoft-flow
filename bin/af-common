@@ -8,7 +8,6 @@
 # shell output
 info() {
   if ! flag silent; then
-    echo " > $@"
     clr_blue " > $@"
   fi  
 }
