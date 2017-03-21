@@ -122,7 +122,7 @@ parse_args() {
 git_do() {
   # equivalent to git, used to indicate actions that make modifications
   if flag show_commands; then
-    info "\"git $@\""
+    info git $@
   fi
   if flag silent; then
     git "$@" &> /dev/null
