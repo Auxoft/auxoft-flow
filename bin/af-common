@@ -8,10 +8,10 @@
 # shell output
 mssg() {
   if ! flag silent; then
-    clr_green " # $@"
+    clr_blue " # $@"
   fi  
 }
-warn() { echo " * $@" >&2; }
+warn() { clr_brown " * $@" >&2; }
 die() { clr_red " ** $@" >&2; exit 1; }
 
 escape() {
