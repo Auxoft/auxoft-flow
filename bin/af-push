@@ -84,6 +84,13 @@ cmd_default() {
 
   done
 
+  new_current_branch=( `git_current_branch` )
+  if ! [[ $new_current_branch == $current_branch ]] ; then
+    mssg "checkout to branch: $current_branch"
+
+    git_do checkout "$current_branch"
+  fi
+
   mssg "done"
 }
 
