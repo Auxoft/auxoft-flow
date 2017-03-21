@@ -64,8 +64,6 @@ cmd_default() {
   done
 
   for branch in ${push_branches[@]}; do
-    echo $branch
-
     if ! [[ $branch == $current_branch ]] ; then
       mssg "checkout to branch: $branch"
 
