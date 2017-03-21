@@ -116,8 +116,8 @@ parse_args() {
 git_do() {
   # equivalent to git, used to indicate actions that make modifications
   if flag show_commands; then
-    message="git $@"
-    clr_green $message
+    # message=
+    clr_green " > git $@"
     # clr_blue "git" $@
     # clr_blue $@
   fi
