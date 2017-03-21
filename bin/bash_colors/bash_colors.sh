@@ -91,7 +91,7 @@ function clr_escape
 {
     local result="$1"
 
-    echo $result
+    echo ${result[@]}
 
     until [ -z "${2:-}" ]; do
 	if ! [ $2 -ge 0 -a $2 -le 47 ] 2>/dev/null; then
