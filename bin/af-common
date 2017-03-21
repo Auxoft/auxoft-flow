@@ -116,9 +116,6 @@ parse_args() {
   if [ -e "./.afconf" ]; then
     . ./.afconf
   fi
-
-  # setflag allAll 0 #true
-  # setflag allAll 1 #false
 }
 
 
