@@ -8,6 +8,7 @@
 # shell output
 info() {
   if ! flag silent; then
+    echo " > $@"
     clr_blue " > $@"
   fi  
 }
@@ -121,7 +122,7 @@ parse_args() {
 git_do() {
   # equivalent to git, used to indicate actions that make modifications
   if flag show_commands; then
-    echo "\"git $@\""
+    info "\"git $@\""
   fi
   if flag silent; then
     git "$@" &> /dev/null
