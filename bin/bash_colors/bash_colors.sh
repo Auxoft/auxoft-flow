@@ -47,6 +47,8 @@ function fn_exists
 # iterate through command arguments, o allow for iterative color application
 function clr_layer
 {
+    echo $@
+
     # default echo setting
     CLR_ECHOSWITCHES="-e"
     CLR_STACK=""
