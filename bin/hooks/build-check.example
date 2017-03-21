@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/bash
 
 
 # check build project after marge to master or release/* branch

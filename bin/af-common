@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/bash
 
 
 #
@@ -12,7 +12,7 @@ mssg() {
   fi  
 }
 warn() { echo " * $@" >&2; }
-die() { echo " ** $@" >&2; exit 1; }
+die() { clr_red " ** $@" >&2; exit 1; }
 
 escape() {
   echo "$1" | sed 's/\([\.\$\*]\)/\\\1/g'
