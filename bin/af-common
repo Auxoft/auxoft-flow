@@ -118,7 +118,7 @@ git_do() {
   if flag show_commands; then
     echo "git $@" >&2
   fi
-  git "$@" &1>/dev/null
+  git "$@" > /dev/null
 }
 
 git_local_branches() { git branch --no-color | sed 's/^[* ] //'; }
