@@ -1,0 +1,96 @@
+#!/bin/sh
+
+
+init() {
+  require_git_repo
+  require_af_initialized
+  af_load_settings
+}
+
+
+cmd_default() {
+  DEFINE_boolean force false 'force push if do not exist remote branch' f
+  DEFINE_boolean all false 'push all release/* and master branches' a
+  DEFINE_boolean allAll false 'push all branches' A
+
+  parse_args "$@"
+
+
+  require_clean_working_tree
+
+
+  declare -a push_branches
+  push_branches+=( `git_current_branch` )
+
+  current_branche=( `git_current_branch` )
+  local_branches=( `git_local_branches` )
+  remote_branches=( `git_remote_branches` )
+
+  # remove builds branches
+  for branch in ${local_branches[@]}; do
+    if [[ $branch == $NIGHTBUILD_PREFIX* ]] \
+       || [[ $branch == $SPRINTBUILD_PREFIX* ]] \
+       || [[ $branch == $RCBUILD_PREFIX* ]] \
+       || [[ $branch == $PATCHBUILD_PREFIX* ]] \
+       || [[ $branch == $RELEASEBUILD_PREFIX* ]] ; then
+
+      local_branches=( "${local_branches[@]/$branch}" )
+    fi
+  done
+
+  # if not set -A then remove all branches is not release/* or master
+  if ! flag allAll ; then
+    for branch in ${local_branches[@]}; do
+      if [[ $branch != $MASTER_BRANCH ]] && [[ $branch != $RELEASE_PREFIX* ]] ; then
+        local_branches=( "${local_branches[@]/$branch}" )
+      fi
+    done
+  fi
+
+  if flag all || flag allAll ; then
+    for branch in ${local_branches[@]}; do
+      push_branches+=($branch)
+    done
+  fi
+
+  push_branches=( $(echo "${push_branches[@]}" | tr ' ' '\n' | sort -u | tr '\n' ' ') )
+
+  for branch in ${push_branches[@]}; do
+    if ! [[ $branch == $current_branche ]] ; then
+      if ! flag force && ! has "$ORIGIN/$branch" $(git_remote_branches) ; then
+        push_branches=( "${push_branches[@]/$branch}" )
+      fi
+    fi
+  done
+
+  for branch in ${push_branches[@]}; do
+    echo $branch
+
+    mssg "create release branch: $branch"
+
+    git_do checkout -b "$branch"
+  
+    if has "$ORIGIN/$branch" $(git_remote_branches) ; then
+      mssg "pull from origin/$branch into $branch"
+
+      git_do fetch -q origin
+      git_do pull -q origin
+    fi
+  done
+
+  mssg "done"
+}
+
+
+cmd_help() {
+  usage
+  exit 0
+}
+
+
+usage_init() {
+  FLAGS_HELP=`cat << EndOfMessage
+USAGE: af push [-g] [-s] [-h] [-f] [-a] [-A]
+ 
+EndOfMessage`
+}

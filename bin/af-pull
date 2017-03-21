@@ -1,0 +1,26 @@
+#!/bin/sh
+
+
+cmd_default() {
+  DEFINE_boolean all false 'pull all release/* and master branches' a
+  DEFINE_boolean forceAll false 'pull all branches' A
+
+  parse_args "$@"
+
+
+  mssg "done"
+}
+
+
+cmd_help() {
+  usage
+  exit 0
+}
+
+
+usage_init() {
+  FLAGS_HELP=`cat << EndOfMessage
+USAGE: af pull [-g] [-s] [-h] [-f] [-a] [-A]
+ 
+EndOfMessage`
+}
