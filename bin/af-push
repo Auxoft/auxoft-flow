@@ -66,9 +66,9 @@ cmd_default() {
   for branch in ${push_branches[@]}; do
     echo $branch
 
-    mssg "create release branch: $branch"
-
     if ! [[ $branch == $current_branch ]] ; then
+      mssg "checkout to branch: $branch"
+
       git_do checkout "$branch"
     fi
   
