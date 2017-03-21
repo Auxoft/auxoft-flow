@@ -89,9 +89,10 @@ function clr_layer
 # Ex: clr_escape foobar $CLR_RED $CLR_BOLD
 function clr_escape
 {
-    echo ${1[@]}
-
     local result="$1"
+
+    echo $result
+
     until [ -z "${2:-}" ]; do
 	if ! [ $2 -ge 0 -a $2 -le 47 ] 2>/dev/null; then
 	    echo "clr_escape: argument \"$2\" is out of range" >&2 && return 1
