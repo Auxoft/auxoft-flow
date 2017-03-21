@@ -52,8 +52,6 @@ cmd_default() {
 
   push_branches=( $(echo "${push_branches[@]}" | tr ' ' '\n' | sort -u | tr '\n' ' ') )
 
-  echo ${push_branches[@]}
-
   for branch in ${push_branches[@]}; do
     if ! [[ $branch == $current_branch ]] ; then
       if ! has "$ORIGIN/$branch" $(git_remote_branches) ; then
@@ -62,27 +60,25 @@ cmd_default() {
     fi
   done
 
-  echo ${push_branches[@]}
+  for branch in ${push_branches[@]}; do
+    if ! [[ $branch == $current_branch ]] ; then
+      mssg "checkout to branch: $branch"
 
-  # for branch in ${push_branches[@]}; do
-  #   if ! [[ $branch == $current_branch ]] ; then
-  #     mssg "checkout to branch: $branch"
-
-  #     git_do checkout "$branch"
-  #   fi
+      git_do checkout "$branch"
+    fi
   
-  #   mssg "pull from origin/$branch into $branch"
+    mssg "pull from origin/$branch into $branch"
 
-  #   git_do fetch -q origin
-  #   git_do pull -q origin
-  # done
+    git_do fetch -q origin
+    git_do pull -q origin
+  done
 
-  # new_current_branch=( `git_current_branch` )
-  # if ! [[ $new_current_branch == $current_branch ]] ; then
-  #   mssg "checkout to branch: $current_branch"
+  new_current_branch=( `git_current_branch` )
+  if ! [[ $new_current_branch == $current_branch ]] ; then
+    mssg "checkout to branch: $current_branch"
 
-  #   git_do checkout "$current_branch"
-  # fi
+    git_do checkout "$current_branch"
+  fi
 
   mssg "done"
 }
