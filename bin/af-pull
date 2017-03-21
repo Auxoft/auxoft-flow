@@ -1,6 +1,13 @@
 #!/bin/bash
 
 
+init() {
+  require_git_repo
+  require_af_initialized
+  af_load_settings
+}
+
+
 cmd_default() {
   DEFINE_boolean all false 'push all release/* and master branches' a
   DEFINE_boolean allAll false 'push all branches' A
