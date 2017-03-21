@@ -6,6 +6,11 @@
 #
 
 # shell output
+info() {
+  if ! flag silent; then
+    clr_blue " > $@"
+  fi  
+}
 mssg() {
   if ! flag silent; then
     clr_green " # $@"
@@ -116,10 +121,7 @@ parse_args() {
 git_do() {
   # equivalent to git, used to indicate actions that make modifications
   if flag show_commands; then
-    # message=
-    clr_blue "' > git $@'"
-    # clr_blue "git" $@
-    # clr_blue $@
+    info "git $@"
   fi
   if flag silent; then
     git "$@" &> /dev/null
