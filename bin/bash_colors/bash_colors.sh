@@ -53,13 +53,15 @@ function clr_layer
     CLR_SWITCHES=""
     ARGS=("$@")
 
-    echo $ARGS
+    echo "------------"
+    echo ${ARGS[@]}
+    echo "------------"
 
     # iterate over arguments in reverse
     for ((i=$#; i>=0; i--)); do
         ARG=${ARGS[$i]}
 
-        echo $ARG
+        echo "wwwww:  " $ARG
         # set CLR_VAR as last argtype
         firstletter=${ARG:0:1}
 
