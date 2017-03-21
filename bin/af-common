@@ -116,7 +116,7 @@ parse_args() {
 git_do() {
   # equivalent to git, used to indicate actions that make modifications
   if flag show_commands; then
-    echo "git $@" >&2
+    clr_blue "git $@" >&2
   fi
   if flag silent; then
     git "$@" &> /dev/null
