@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/bash
 
 
 # get app version, return 2 values separate by space:

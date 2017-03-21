@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/bash
 
 
 cmd_default() {
@@ -9,7 +9,7 @@ cmd_default() {
   if [ ! -e "./af" ] || flag force; then
     mssg "create ./af script in root project folder"
 
-    echo "#!/bin/sh"             >  ./af
+    echo "#!/bin/bash"           >  ./af
     echo ""                      >> ./af
     echo $(dirname $0)'/af $@'   >> ./af
 

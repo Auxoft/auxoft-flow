@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/bash
 
 
 #
@@ -6,13 +6,18 @@
 #
 
 # shell output
-mssg() {
+info() {
   if ! flag silent; then
-    echo " # $@"
+    clr_blue " > $@"
   fi  
 }
-warn() { echo " * $@" >&2; }
-die() { echo " ** $@" >&2; exit 1; }
+mssg() {
+  if ! flag silent; then
+    clr_green " # $@"
+  fi  
+}
+warn() { clr_brown " * $@" >&2; }
+die() { clr_red " ** $@" >&2; exit 1; }
 
 escape() {
   echo "$1" | sed 's/\([\.\$\*]\)/\\\1/g'
@@ -101,11 +106,16 @@ endswith() { [ "$1" != "${1%$2}" ]; }
 # convenience functions for checking shFlags flags
 flag() { local FLAG; eval FLAG='$FLAGS_'$1; [ $FLAG -eq $FLAGS_TRUE ]; }
 noflag() { local FLAG; eval FLAG='$FLAGS_'$1; [ $FLAG -ne $FLAGS_TRUE ]; }
+setflag() { eval FLAGS_$1=$2; }
 
 parse_args() {
   # parse options
   FLAGS "$@" || exit $?
   eval set -- "${FLAGS_ARGV}"
+
+  if [ -e "./.afconf" ]; then
+    . ./.afconf
+  fi
 }
 
 
@@ -116,9 +126,13 @@ parse_args() {
 git_do() {
   # equivalent to git, used to indicate actions that make modifications
   if flag show_commands; then
-    echo "git $@" >&2
+    info "`echo "git $@"`"
   fi
-  git "$@"
+  if flag show_commands; then
+    git "$@"
+  else
+    git "$@" &> /dev/null
+  fi
 }
 
 git_local_branches() { git branch --no-color | sed 's/^[* ] //'; }
@@ -237,6 +251,7 @@ af_is_initialized() {
 
 # loading settings that can be overridden using git config
 af_load_settings() {
+  export ORIGIN="origin"
   export DOT_GIT_DIR=$(git rev-parse --git-dir 2>/dev/null)
   export MASTER_BRANCH=$(git config --get auxoft.branch.master)
   export FEATURE_PREFIX=$(git config --get auxoft.prefix.feature)
