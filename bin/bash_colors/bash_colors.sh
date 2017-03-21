@@ -65,14 +65,14 @@ function clr_layer
         # set CLR_VAR as last argtype
         firstletter=${ARG:0:1}
 
-        # check if argument is a switch
-        # if [ "$firstletter" = "-" ] ; then
-        #     # if -n is passed, set switch for echo in clr_escape
-        #     if [[ $ARG == *"n"* ]]; then
-        #         CLR_ECHOSWITCHES="-en"
-        #         CLR_SWITCHES=$ARG
-        #     fi
-        # else
+        check if argument is a switch
+        if [ "$firstletter" = "-" ] ; then
+            # if -n is passed, set switch for echo in clr_escape
+            if [[ $ARG == *"n"* ]]; then
+                CLR_ECHOSWITCHES="-en"
+                CLR_SWITCHES=$ARG
+            fi
+        else
             # last arg is the incoming string
             if [ -z "$CLR_STACK" ]; then
                 CLR_STACK=$ARG
@@ -83,7 +83,7 @@ function clr_layer
                     CLR_STACK=$($ARG "$CLR_STACK" $CLR_SWITCHES)
                 fi
             fi
-        # fi
+        fi
     done
 
     echo $CLR_STACK
