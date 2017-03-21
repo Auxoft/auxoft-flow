@@ -19,6 +19,7 @@ usage() {
 
 main() {
   # load common functionality
+  . "$AF_DIR/bash_colors/bash_colors.sh"
   . "$AF_DIR/af-common"
 
   # This environmental variable fixes non-POSIX getopt style argument

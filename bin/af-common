@@ -8,7 +8,7 @@
 # shell output
 mssg() {
   if ! flag silent; then
-    echo " # $@"
+    clr_greenb " # $@"
   fi  
 }
 warn() { echo " * $@" >&2; }
