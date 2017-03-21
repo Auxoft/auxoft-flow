@@ -75,6 +75,8 @@ cmd_default() {
       git_do pull -q origin
     fi
 
+    mssg "push to origin/$branch into $branch"
+
     git_do push origin "$branch" || \
       die "Pushing branch to origin failed. Please run finish again to retry."
 
