@@ -65,7 +65,7 @@ function clr_layer
         # set CLR_VAR as last argtype
         firstletter=${ARG:0:1}
 
-        check if argument is a switch
+        # check if argument is a switch
         if [ "$firstletter" = "-" ] ; then
             # if -n is passed, set switch for echo in clr_escape
             if [[ $ARG == *"n"* ]]; then
