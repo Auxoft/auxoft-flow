@@ -15,13 +15,7 @@ cmd_default() {
 
   parse_args "$@"
 
-  FLAGS_allAll=0
-  
-  echo $FLAGS_allAll
-  echo
-
   require_clean_working_tree
-
 
   declare -a push_branches
   push_branches+=( `git_current_branch` )

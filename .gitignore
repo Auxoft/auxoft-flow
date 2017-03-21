@@ -12,3 +12,5 @@
 /bin/hooks/version-get
 
 /bin/hooks/version-set
+
+/.afconf
