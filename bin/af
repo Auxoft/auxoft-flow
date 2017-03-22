@@ -89,6 +89,7 @@ Try 'af <subcommand> -h' for details.
 subcommands:
   install             Install af to your project, need run in root project folder (sampless:  ./bin/af/af install).
   init                Initialize a new git repo with support for the branching model.
+  start               Start feature or hotfix branch (run on master or release/* branch)."
   finish              Finish feature or hotfix branch (run on feature/* or hotfix/* branch)."
   feature             Manage your feature branches (run on master or feature/* branches).
   nightbuild          Create nightbuild (run on master branch).
