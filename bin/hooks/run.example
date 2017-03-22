@@ -2,7 +2,7 @@
 
 
 cmd_test() {
-  echo "test command"
+  clr_cyan "test command"
 }
 
 

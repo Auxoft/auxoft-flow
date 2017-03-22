@@ -20,7 +20,11 @@
 #  file name: build-check
 
 
-echo " > checking build project:"
-echo " > done"
+. ./bin/bash_colors/bash_colors.sh
+
+
+clr_cyan " > checking build project:"
+clr_cyan "`echo " >  $0 $@"`"
+clr_cyan " > done"
 
 exit 0
