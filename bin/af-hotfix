@@ -230,7 +230,7 @@ cmd_finish() {
 usage_init() {
   FLAGS_HELP=`cat << EndOfMessage
 USAGE: af hotfix start [-s] [-g] [-h] <name>
-       af hotfix finish [-s] [-g] [-h] [-f] [-n]
+       af hotfix finish [-s] [-g] [-h] [-f] [-n] [-y]
        af hotfix update [-s] [-g] [-h]
   
 subcommans:

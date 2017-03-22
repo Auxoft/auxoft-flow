@@ -1,0 +1,35 @@
+#!/bin/bash
+
+
+init() {
+  require_git_repo
+  require_af_initialized
+  af_load_settings
+}
+
+
+cmd_default() {
+  current_branch=( `git_current_branch` )
+
+  if [[ $current_branch == $MASTER_BRANCH ]] ; then
+    ./af feature start $@
+  elif [[ $current_branch == $RELEASE_PREFIX* ]] ; then
+    ./af hotfix start $@
+  else
+    die "Branches '$MASTER_BRANCH' or '$RELEASE_PREFIX*' is not current."
+  fi
+}
+
+
+cmd_help() {
+  usage
+  exit 0
+}
+
+
+usage_init() {
+  FLAGS_HELP=`cat << EndOfMessage
+USAGE: af start [-g] [-s] [-h] <name>
+ 
+EndOfMessage`
+}
