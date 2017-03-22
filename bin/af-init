@@ -71,7 +71,7 @@ cmd_help() {
 
 usage_init() {
   FLAGS_HELP=`cat << EndOfMessage
-USAGE: af init [-g] [-s] [-h] [-v <version>] [-n <version_name>]
+USAGE: af init [-g] [-s] [-h] [-f] [-v <version>] [-n <version_name>]
  
 EndOfMessage`
 }
