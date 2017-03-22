@@ -1,0 +1,37 @@
+#!/bin/bash
+
+
+cmd_default() {
+  DEFINE_boolean force false 'force setting of af branches, even if already configured' f
+
+  parse_args "$@"
+
+  curent_dir=$(pwd)
+
+  mssg "cd to $AF_DIR/.. folder"
+  cd $AF_DIR/..
+
+  mssg "pull from auxoft-flow:origin/master into auxoft-flow:master"
+
+  git_do fetch -q origin
+  git_do pull -q origin
+
+  mssg "cd back"
+  cd $curent_dir
+
+  mssg "done"
+}
+
+
+cmd_help() {
+  usage
+  exit 0
+}
+
+
+usage_init() {
+  FLAGS_HELP=`cat << EndOfMessage
+USAGE: af upgrade [-g] [-s] [-h] [-f]
+ 
+EndOfMessage`
+}
