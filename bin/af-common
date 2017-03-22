@@ -268,7 +268,7 @@ af_load_version() {
   AF_DIR=$(dirname $0)
 
   declare -a versions
-  versions=( `sh $AF_DIR/hooks/version-get` )
+  versions=( `$AF_DIR/hooks/version-get` )
 
   export VERSION=${versions[0]}
   export VERSION_NAME=${versions[1]}
