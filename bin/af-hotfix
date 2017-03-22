@@ -119,10 +119,9 @@ cmd_finish() {
   mkdir -p ./patches/applied 1> /dev/null 2> /dev/null
 
   if ! flag nomaster; then
-    git_do format-patch "$RELEASE_BRANCH" --stdout > "$PATCH_FILE" || \
+    git format-patch "$RELEASE_BRANCH" --stdout > "$PATCH_FILE" || \
       die "Could not create patch."
   fi
-
 
   mssg "marge from $RELEASE_BRANCH into $HOTFIX_BRANCH"
 
