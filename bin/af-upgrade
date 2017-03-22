@@ -2,8 +2,6 @@
 
 
 cmd_default() {
-  DEFINE_boolean force false 'force setting of af branches, even if already configured' f
-
   parse_args "$@"
 
   curent_dir=$(pwd)
@@ -31,7 +29,7 @@ cmd_help() {
 
 usage_init() {
   FLAGS_HELP=`cat << EndOfMessage
-USAGE: af upgrade [-g] [-s] [-h] [-f]
+USAGE: af upgrade [-g] [-s] [-h]
  
 EndOfMessage`
 }
