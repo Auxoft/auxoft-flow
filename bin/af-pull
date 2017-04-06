@@ -69,8 +69,8 @@ cmd_default() {
   
     mssg "pull from origin/$branch into $branch"
 
-    git_do fetch -q origin
-    git_do pull -q origin
+    git_do fetch origin
+    git_do pull origin
   done
 
   new_current_branch=( `git_current_branch` )
