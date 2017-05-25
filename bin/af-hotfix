@@ -207,7 +207,6 @@ cmd_finish() {
         af_update_version $VERSION $VERSION_NAME
 
 
-
         if flag yesall  ||  question_Yn "Do you finish feature '$PATCH_FEATURE_NAME'?"; then
           mssg "commit applied files"
 

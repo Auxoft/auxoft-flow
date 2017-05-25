@@ -5,6 +5,8 @@
 # Common functionality
 #
 
+# test cooment
+
 # shell output
 info() {
   if ! flag silent; then
