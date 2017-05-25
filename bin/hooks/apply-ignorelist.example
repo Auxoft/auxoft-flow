@@ -1,0 +1,14 @@
+#!/bin/bash
+
+
+# get ignore file list for apply command, return many lines (one line is one file):
+#
+#  example:
+#   > ./apply-ignorelist
+#    ./current.version
+#
+#
+#  file name: apply-ignorelist
+
+
+echo "./current.version"

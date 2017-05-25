@@ -13,4 +13,6 @@
 
 /bin/hooks/version-set
 
+/bin/hooks/apply-ignorelist
+
 /.afconf
