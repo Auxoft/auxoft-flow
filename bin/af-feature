@@ -88,8 +88,8 @@ cmd_finish() {
 
   mssg "pull from origin/$MASTER_BRANCH into $MASTER_BRANCH"
 
-  git_do fetch -q origin
-  git_do pull -q origin
+  git_do fetch origin
+  git_do pull origin
 
 
   mssg "checkout to $FEATURE_BRANCH"

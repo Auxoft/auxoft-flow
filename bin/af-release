@@ -41,8 +41,8 @@ cmd_create() {
   
   mssg "pull from origin/$MASTER_BRANCH into $MASTER_BRANCH"
 
-  git_do fetch -q origin
-  git_do pull -q origin
+  git_do fetch origin
+  git_do pull origin
 
   
   mssg "create release branch: $RELEASE_BRANCH"
@@ -130,8 +130,8 @@ cmd_prebuild() {
 
   mssg "pull from origin/$RELEASE_BRANCH into $RELEASE_BRANCH"
 
-  git_do fetch -q origin
-  git_do pull -q origin
+  git_do fetch origin
+  git_do pull origin
 
 
   if [[ "$VERSION_C" == "0" ]]; then
@@ -210,8 +210,8 @@ cmd_build() {
 
   mssg "pull from origin/$RELEASE_BRANCH into $RELEASE_BRANCH"
 
-  git_do fetch -q origin
-  git_do pull -q origin
+  git_do fetch origin
+  git_do pull origin
 
 
   mssg "create releasebuild branch: $RELEASEBUILD_BRANCH"

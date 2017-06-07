@@ -71,8 +71,8 @@ cmd_default() {
     if has "$ORIGIN/$branch" $(git_remote_branches) ; then
       mssg "pull from origin/$branch into $branch"
 
-      git_do fetch -q origin
-      git_do pull -q origin
+      git_do fetch origin
+      git_do pull origin
     fi
 
     mssg "push to origin/$branch into $branch"
