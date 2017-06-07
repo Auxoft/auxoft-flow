@@ -168,7 +168,7 @@ cmd_finish() {
 
     mssg "create patch file $PATCH_FILE between $HOTFIX_BRANCH and $RELEASE_BRANCH"
 
-    git diff "$MASTER_BRANCH" > "$PATCH_FILE" || \
+    git diff --full-index --binary "$MASTER_BRANCH" > "$PATCH_FILE" || \
       die "Could not create patch."
 
 
