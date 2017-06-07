@@ -95,8 +95,8 @@ cmd_finish() {
 
   mssg "pull from origin/$RELEASE_BRANCH into $RELEASE_BRANCH"
 
-  git_do fetch -q origin
-  git_do pull -q origin
+  git_do fetch origin
+  git_do pull origin
 
 
   mssg "checkout to $HOTFIX_BRANCH"
@@ -111,16 +111,12 @@ cmd_finish() {
     die "There were merge conflicts."
 
 
-  mssg "marge from $RELEASE_BRANCH into $HOTFIX_BRANCH"
+  if ! flag force; then
+    mssg "check building"
 
-  git_do merge --no-ff "$RELEASE_BRANCH" -m "### marge from $RELEASE_BRANCH into $HOTFIX_BRANCH" || \
-    die "There were merge conflicts."
-
-
-  mssg "check building"
-
-  $AF_DIR/hooks/build-check "$VERSION_SHORT" "$VERSION_NAME" "$VERSION_TYPE" "$VERSION_LONG" || \
-    die "There were check build problem."
+    $AF_DIR/hooks/build-check "$VERSION_SHORT" "$VERSION_NAME" "$VERSION_TYPE" "$VERSION_LONG" || \
+      die "There were check build problem."
+  fi
 
 
   mssg "checkout to $RELEASE_BRANCH"
@@ -152,6 +148,24 @@ cmd_finish() {
     APPLIED_PATCH_FILE="./patches/applied/hotfix_$HOTFIX_NAME.patch"
 
 
+    mssg "checkout to $MASTER_BRANCH"
+
+    git_do checkout "$MASTER_BRANCH" || \
+      die "Could not check out $MASTER_BRANCH."
+
+
+    mssg "pull from origin/$MASTER_BRANCH into $MASTER_BRANCH"
+
+    git_do fetch origin
+    git_do pull origin
+
+
+    mssg "checkout to $RELEASE_BRANCH"
+
+    git_do checkout "$RELEASE_BRANCH" || \
+      die "Could not check out $RELEASE_BRANCH."
+
+
     mssg "create patch file $PATCH_FILE between $HOTFIX_BRANCH and $RELEASE_BRANCH"
 
     git diff "$MASTER_BRANCH" > "$PATCH_FILE" || \
@@ -165,12 +179,6 @@ cmd_finish() {
         die "Could not check out $MASTER_BRANCH."
 
 
-      mssg "pull from origin/$MASTER_BRANCH into $MASTER_BRANCH"
-
-      $AF_DIR/af pull || \
-        die "Could not pull from origin/$MASTER_BRANCH."
-
-
       mssg "start feature $PATCH_FEATURE_NAME"
 
       $AF_DIR/af -s feature start "$PATCH_FEATURE_NAME" || \
@@ -180,7 +188,7 @@ cmd_finish() {
       mssg "apply path $PATCH_FILE to $FEATURE_PREFIX$PATCH_FEATURE_NAME"
 
       APPLIED_PATCH=1
-      git_do apply "$PATCH_FILE" || \
+      git_do apply --whitespace=fix --reject "$PATCH_FILE" || \
         while true; do
           warn "Could not apply path $PATCH_FILE to $PATCH_FEATURE_BRANCH"
           APPLIED_PATCH=0
