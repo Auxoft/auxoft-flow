@@ -1,0 +1,168 @@
+
+
+current.version file:
+------------------------------
+x.y.z - current version, x - major, y - minor, z - path
+name - current name for build, exmpl: 'alpha', 'beta', ''
+------------------------------
+
+current.sprint file:
+------------------------------
+sp - current sprint number, exmpl: 23, 24, 25, ...
+------------------------------
+
+current.mode file:
+------------------------------
+mode - curent modif for build, exmpl: rc1, rc2, path1, path2, ...
+------------------------------
+
+
+full version: x.y.z[-sp.nnnn.{date}]+[name[+mode]]
+
+exmlp:
+in master branch:
+------------------------------ out ver: 0.3.0+beta
+0.3.0
+beta
+------------------------------
+------------------------------
+------------------------------
+
+in develop branch:
+------------------------------ out ver: 0.3.0-24.160805+beta
+0.3.0
+beta
+------------------------------
+24
+------------------------------2
+------------------------------
+
+in sprint/* branch:
+------------------------------ out ver: 0.3.0+beta+sp24
+0.3.0
+beta
+------------------------------
+24
+------------------------------
+sp24
+------------------------------
+
+in release/* branch:
+------------------------------ out ver: 0.3.0+beta+rc1
+0.3.0
+beta
+rc1
+------------------------------
+
+in hotfix/* branch:
+------------------------------ out ver: 0.3.2+beta+path2
+0.3.2
+beta
+path2
+------------------------------
+
+
+grunt commands:
+
+grunt = grunt release
+
+grunt release - build release version for chrome and safari without crx and safariext files
+grunt debug - build debug version for chrome and safari without crx and safariext files
+grunt mock - build mock version for chrome and safari without crx and safariext files
+
+
+run only master, develop, release-*, hotfix-* branches:
+
+grunt build - build release version for chrome, safari, osx, ios ... etc with crx, safariext, dmg, zip ... etc files to build folder
+  before build need update version in all resource files
+  if in master then update x.y.z.(N) = x.y.z.(N+1):  0 - 0.3.0+beta, 1 - 0.3.0.1+beta, 2 - 0.3.0.2+beta
+  if in develop then update sp.build.n = sp.build.n+1:  0 - 0.2.0-23.160805.0+beta, 1 - 0.2.0-23.160805.1+beta, 2 - 0.2.0-23.160805.2+beta
+  if in release/* mode: rc(N) = rc(N+1):  0 - 0.2.0+beta+rc0, 1 - 0.2.0+beta+rc1, 2 - 0.2.0+beta+rc2
+  if in hotfix/* mode: path(N) = path(N+1):  0 - 0.3.0+beta+path0, 1 - 0.3.0+beta+path1, 2 - 0.3.0+beta+path2
+  if others branches then not run
+
+
+grunt deploy - deploy current build to server
+  if in master version_name = x.y.z+name
+  if in develop version_name = x.y.z-sp.build.n+name+mode
+  if in release-* version_name = x.y.z-name+mode
+  if in hotfix-* version_name = x.y.z-name+mode
+  if others branches then not run
+
+
+agf = auxoft git flow
+
+
+agf sprint start
+    ./check_branch develop
+    ./create sprint/sp+1 branch
+    ./update_build sp+1.000000.0
+    git commit -a -m 'sprint sp+1 started'
+
+agf sprint start <sp_number>
+    ./check_branch develop
+    ./create sprint/<sp_number> branch
+    ./update_build <sp_number>.000000.0
+    git commit -a -m 'sprint <sp_number> started'
+
+agf sprint finish
+    ./check_branch develop
+    ./update_build sp+1.000000.0
+    git commit -a -m 'sprint sp+1 started'
+
+
+
+agf release start [name]:
+    ./check_branch develop
+    gfl release start x.(y+1).0
+    ./update_version x.(y+1).0 [name]
+    ./create_release_notes
+    git commit -a -m 'release x.(y+1).0 started'
+
+agf release start <version (= x.y)> [name]:
+    ./check_branch develop
+    gfl release start <version>.0
+    ./update_version <version>.0 [name]
+    ./create_release_notes
+    git commit -a -m 'release <version>.0 started'
+
+agf release finish
+    ./check_branch release/*
+    ./update_release_notes
+    ./update_release_history
+    git commit -a -m 'release x.(y+1).0 finished'
+    gfl release finish -F -p -m x.y.0+name x.y.0
+
+agf release finish <version (= x.y)>:
+    ./check_branch release/*
+    ./update_release_notes
+    ./update_release_history
+    git commit -a -m 'release <version>.0 finished'
+    gfl release finish -F -p -m <version>.0+name <version>.0
+
+
+agf hotfix start:
+    gfl hotfix start x.y.(z+1)
+    update versions to x.y.(z+1)
+    commit updated files with message: 'hotfix x.y.(z+1) started'
+
+agf hotfix start <version (= z)>:
+    gfl hotfix start x.y.<version>
+    update versions to x.y.<version>
+    commit updated files with message: 'hotfix x.y.<version> started'
+
+agf hotfix finish: (run only in develop release/* branch)
+    update release_notes
+    update release_history
+    commit updated files with message: 'hotfix x.y.(z+1) finished'
+    gfl hotfix finish x.y.0
+
+agf hotfix finish <version (= z)>:
+    update release_notes
+    update release_history
+    commit updated files with message: 'hotfix x.y.<version> finished'
+    gfl hotfix finish x.y.<version>
+
+
+
+
