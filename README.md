@@ -31,6 +31,13 @@ This README would normally document whatever steps are necessary to get your app
 * Other community or team contact
 
 
+### TODO ###
+
+- add version command
+    default - get current version
+    -n get next version from current branch (master - next sprintbuild, release/* - next releasebuild)
+
+
 ### Setup configure ###
 
 ```

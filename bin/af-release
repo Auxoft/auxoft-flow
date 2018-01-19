@@ -229,17 +229,31 @@ cmd_build() {
     die "There were build problem."
 
 
+  # add untracket files
+  git_do add -A
+
+  # commit files
+  git_do commit -a -m "### build release $RELEASEBUILD_VERSION"
+
+  git_do tag -a -m "### tag: $RELEASEBUILD_VERSION" "$RELEASEBUILD_VERSION" "$RELEASE_BRANCH" || \
+    die "Tagging failed. Please run finish again to retry."
+
+
   # increment rc version
   NEW_VERSION="$VERSION_A.$VERSION_B.$(($VERSION_C + 1)).1"
   af_update_version $NEW_VERSION $VERSION_NAME
   af_load_version
 
 
+  # update product version
+  af_update_version $NEW_RELEASE_VERSION $VERSION_NAME
+
   # add untracket files
   git_do add -A
 
   # commit files
-  git_do commit -a -m "### build release $RELEASEBUILD_VERSION"
+  git_do commit -a -m "### update release version: $NEW_RELEASE_VERSION"
+
 
   if has "$ORIGIN/$RELEASE_BRANCH" $(git_remote_branches); then
     require_branches_equal "$RELEASE_BRANCH" "$ORIGIN/$RELEASE_BRANCH"
@@ -252,18 +266,6 @@ cmd_build() {
     git_do merge --no-ff "$RELEASEBUILD_BRANCH" -m "### marge from $RELEASEBUILD_BRANCH into $RELEASE_BRANCH" || \
       die "There were merge conflicts."
   fi
-
-  git_do tag -a -m "### tag: $RELEASEBUILD_VERSION" "$RELEASEBUILD_VERSION" "$RELEASE_BRANCH" || \
-    die "Tagging failed. Please run finish again to retry."
-
-  # update product version
-  af_update_version $NEW_RELEASE_VERSION $VERSION_NAME
-
-  # add untracket files
-  git_do add -A
-
-  # commit files
-  git_do commit -a -m "### update release version: $NEW_RELEASE_VERSION"
 
   git_do tag -a -m "### tag: $NEW_RELEASE_TAG" "$NEW_RELEASE_TAG" "$RELEASE_BRANCH" || \
     die "Tagging failed. Please run finish again to retry."
