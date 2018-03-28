@@ -100,11 +100,10 @@ cmd_create() {
   NEW_MASTER_VERSION="$MASTER_VERSION.$(($SPRINT_NUMBER + 1)).1"
 
 
-  mssg "set new dev version in master branch: $NEW_MASTER_VERSION ($MASTER_NAME)"
-
-
   ./af feature start update version
 
+
+  mssg "set new dev version in master branch: $NEW_MASTER_VERSION ($MASTER_NAME)"
 
   af_update_version $NEW_MASTER_VERSION $MASTER_NAME
   af_load_version
