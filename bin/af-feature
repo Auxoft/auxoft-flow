@@ -132,7 +132,8 @@ cmd_finish() {
 
   mssg "delete $FEATURE_BRANCH"
 
-  git_do branch -d "$FEATURE_BRANCH"
+  git_do branch -d "$FEATURE_BRANCH" || \
+    die "Delete branch failed."
 
 
   mssg "done"
