@@ -50,30 +50,42 @@ cmd_create() {
   git_do checkout -b "$RELEASE_BRANCH"
 
 
-  NEW_VERSION="$RELEASE_VERSION.0.1"
-  
-  mssg "set release version to $NEW_VERSION ($RELEASE_NAME)"
-
   ./af hotfix start setup version
   
+
+  NEW_VERSION="$RELEASE_VERSION.0.1"
+  
+  mssg "set release version in $RELEASE_BRANCH branch: $NEW_VERSION ($RELEASE_NAME)"
+
   af_update_version $NEW_VERSION $RELEASE_NAME
   af_load_version
 
-  git_do add -A
 
+  mssg "commit new version files to branch"
+
+  git_do add -A
   git_do commit -a -m "### set release version: $NEW_VERSION"
 
+  
   ./af hotfix finish -f -n
+
+
+  mssg "create tag '$RELEASE_TAG'"
 
   git_do tag -a -m "### tag: $RELEASE_TAG" "$RELEASE_TAG" "$RELEASE_BRANCH" || \
     die "Tagging failed. Please run finish again to retry."
 
+
+  mssg "push tag '$RELEASE_TAG' to origin"
+
   git_do push origin "$RELEASE_TAG" || \
     die "Pushing tag to origin failed. Please run finish again to retry."
 
-  mssg "return to master branch"
+
+  mssg "checkout to $MASTER_BRANCH"
 
   git_do checkout "$MASTER_BRANCH"
+
 
   MASTER_VERSION=$VERSION_A.$(($VERSION_B + 1))
   if [[ "$VERSION_NAME" = "" ]]; then
@@ -85,27 +97,29 @@ cmd_create() {
   question_short_version MASTER_VERSION "new master version" "$MASTER_VERSION"
   question_version_name MASTER_NAME "new master version name (_ for empty)" "$MASTER_NAME"
 
-  RELEASE_BRANCH="$RELEASE_PREFIX$RELEASE_VERSION"
-  RELEASE_TAG="$RELEASE_VERSION.0.0"
-  
   NEW_MASTER_VERSION="$MASTER_VERSION.$(($SPRINT_NUMBER + 1)).1"
 
 
   mssg "set new dev version in master branch: $NEW_MASTER_VERSION ($MASTER_NAME)"
 
+
   ./af feature start update version
+
 
   af_update_version $NEW_MASTER_VERSION $MASTER_NAME
   af_load_version
 
-  git_do add -A
 
+  mssg "commit new version files to branch"
+
+  git_do add -A
   git_do commit -a -m "### set next dev version: $NEW_MASTER_VERSION"
+
 
   ./af feature finish -f
 
 
-  mssg "return to relese branch"
+  mssg "checkout to $RELEASE_BRANCH"
 
   git_do checkout "$RELEASE_BRANCH"
 }

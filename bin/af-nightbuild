@@ -49,7 +49,6 @@ cmd_default() {
   mssg "commit new version files to branch"
 
   git_do add -A
-
   git_do commit -a -m "### update version to $NEW_VERSION"
 
 
