@@ -1,6 +1,13 @@
 #!/bin/bash
 
 
+init() {
+  require_git_repo
+  require_af_initialized
+  af_load_settings
+}
+
+
 cmd_default() {
   parse_args "$@"
 
