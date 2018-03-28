@@ -62,6 +62,25 @@ This README would normally document whatever steps are necessary to get your app
 ```
 
 
+### .afconf ###
+
+```
+#!/bin/bash
+
+
+### 0 = true
+### 1 = false
+
+### for all commands
+###
+#
+# setflag show_commands 0     #default 1
+# setflag silent 0            #default 1
+
+
+```
+
+
 ### Branches names ###
 
 * master:                      master
