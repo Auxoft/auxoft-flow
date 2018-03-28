@@ -145,7 +145,7 @@ cmd_finish() {
 
   if ! flag nomaster; then
 
-    mkdir -p ./patches 1> /dev/null 2> /dev/null
+    mkdir -p ./patches/applied 1> /dev/null 2> /dev/null
 
     PATCH_FILE="./patches/hotfix_$HOTFIX_NAME.patch"
     APPLIED_PATCH_FILE="./patches/applied/hotfix_$HOTFIX_NAME.patch"
