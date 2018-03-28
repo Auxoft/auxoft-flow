@@ -1,18 +1,16 @@
+# OS X
+.DS_Store
 
-/af
+# auxoft-flow
+.afconf
+af
+patches/
+bin/auxoft-flow
 
-/patches/
-
+# dev hooks
 /bin/hooks/run
-
 /bin/hooks/build
-
 /bin/hooks/build-check
-
 /bin/hooks/version-get
-
 /bin/hooks/version-set
-
 /bin/hooks/apply-ignorelist
-
-/.afconf
