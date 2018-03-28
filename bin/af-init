@@ -3,7 +3,7 @@
 
 cmd_default() {
   DEFINE_boolean force false 'force setting of af branches, even if already configured' f
-  DEFINE_string version '' 'set version to initial (a.b.c.d)' v
+  DEFINE_string version '0.0.0.0' 'set version to initial (a.b.c.d)' v
   DEFINE_string name '' 'set version name to initial' n
 
   parse_args "$@"
