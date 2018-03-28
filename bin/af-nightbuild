@@ -39,39 +39,62 @@ cmd_default() {
     die "There were build problem."
 
 
-  # increment nightbuild version
   NEW_VERSION=$VERSION_A.$VERSION_B.$VERSION_C.$(($VERSION_D + 1))
+
+  mssg "increment version to $NEW_VERSION ($VERSION_NAME)"
+
   af_update_version $NEW_VERSION $VERSION_NAME
 
 
-  # add untracket files
+  mssg "commit new version files to branch"
+
   git_do add -A
 
-  # commit files
   git_do commit -a -m "### build nightbuild $VERSION_C.$VERSION_D"
+
 
   if has "$ORIGIN/$MASTER_BRANCH" $(git_remote_branches); then
     require_branches_equal "$MASTER_BRANCH" "$ORIGIN/$MASTER_BRANCH"
   fi
 
   if ! git_is_branch_merged_into "$NB_BRANCH" "$MASTER_BRANCH"; then
+    mssg "checkout to $MASTER_BRANCH"
+
     git_do checkout "$MASTER_BRANCH" || \
       die "Could not check out $MASTER_BRANCH."
+
+    mssg "marge from $MASTER_BRANCH into $NB_BRANCH"
 
     git_do merge --no-ff "$NB_BRANCH" -m "### marge from $NB_BRANCH into $MASTER_BRANCH" || \
       die "There were merge conflicts."
   fi
 
+
+  mssg "create tag '$VERSION'"
+
   git_do tag -a -m "### tag: $VERSION" "$VERSION" "$MASTER_BRANCH" || \
-    die "Tagging failed. Please run finish again to retry."
+    die "Tagging failed."
+
+
+  mssg "push $MASTER_BRANCH to origin"
 
   git_do push origin "$MASTER_BRANCH" || \
-    die "Pushing master to origin failed. Please run finish again to retry."
+    die "Pushing master to origin failed."
+
+
+  mssg "push tag '$VERSION' to origin"
 
   git_do push origin "$VERSION" || \
-    die "Pushing tag to origin failed. Please run finish again to retry."
+    die "Pushing tag to origin failed."
 
-  git_do branch -d "$NB_BRANCH"
+
+  mssg "delete $FEATURE_BRANCH"
+
+  git_do branch -d "$NB_BRANCH" || \
+    die "Delete branch failed."
+
+
+  mssg "done"
 }
 
 
