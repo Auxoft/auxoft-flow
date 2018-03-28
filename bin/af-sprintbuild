@@ -81,19 +81,19 @@ cmd_default() {
   mssg "create tag '$SB_TAG'"
 
   git_do tag -a -m "### tag: $SB_TAG" "$SB_TAG" "$MASTER_BRANCH" || \
-    die "Tagging failed. Please run finish again to retry."
+    die "Tagging failed."
 
 
   mssg "push $MASTER_BRANCH to origin"
 
   git_do push origin "$MASTER_BRANCH" || \
-    die "Pushing master to origin failed. Please run finish again to retry."
+    die "Pushing master to origin failed."
 
 
   mssg "push tag '$SB_TAG' to origin"
 
   git_do push origin "$SB_TAG" || \
-    die "Pushing tag to origin failed. Please run finish again to retry."
+    die "Pushing tag to origin failed."
 
 
   mssg "delete $NB_BRANCH"

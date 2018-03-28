@@ -163,43 +163,60 @@ cmd_prebuild() {
     die "There were build problem."
 
 
-  # increment rc version
   NEW_VERSION=$VERSION_A.$VERSION_B.$VERSION_C.$(($VERSION_D + 1))
+
+  mssg "increment version to $NEW_VERSION ($VERSION_NAME)"
+
   af_update_version $NEW_VERSION $VERSION_NAME
 
 
-  # add untracket files
-  git_do add -A
+  mssg "commit new version files to branch"
 
-  # commit files
-  if [[ "$VERSION_C" == "0" ]]; then
-    git_do commit -a -m "### build release candidate $VERSION"
-  else
-    git_do commit -a -m "### build patch $VERSION"
-  fi
+  git_do add -A
+  git_do commit -a -m "### update version to $NEW_VERSION"
+
 
   if has "$ORIGIN/$RELEASE_BRANCH" $(git_remote_branches); then
     require_branches_equal "$RELEASE_BRANCH" "$ORIGIN/$RELEASE_BRANCH"
   fi
 
   if ! git_is_branch_merged_into "$BUILD_BRANCH" "$RELEASE_BRANCH"; then
+    mssg "checkout to $RELEASE_BRANCH"
+
     git_do checkout "$RELEASE_BRANCH" || \
       die "Could not check out $RELEASE_BRANCH."
+
+    mssg "marge from $BUILD_BRANCH into $RELEASE_BRANCH"
 
     git_do merge --no-ff "$BUILD_BRANCH" -m "### marge from $BUILD_BRANCH into $RELEASE_BRANCH" || \
       die "There were merge conflicts."
   fi
 
+
+  mssg "create tag '$VERSION'"
+
   git_do tag -a -m "### tag: $VERSION" "$VERSION" "$RELEASE_BRANCH" || \
-    die "Tagging failed. Please run finish again to retry."
+    die "Tagging failed."
+
+
+  mssg "push $RELEASE_BRANCH to origin"
 
   git_do push origin "$RELEASE_BRANCH" || \
-    die "Pushing master to origin failed. Please run finish again to retry."
+    die "Pushing master to origin failed."
+
+  
+  mssg "push tag '$VERSION' to origin"
 
   git_do push origin "$VERSION" || \
-    die "Pushing tag to origin failed. Please run finish again to retry."
+    die "Pushing tag to origin failed."
+
+
+  mssg "delete $BUILD_BRANCH"
 
   git_do branch -d "$BUILD_BRANCH"
+
+
+  mssg "done"
 }
 
 
