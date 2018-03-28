@@ -34,8 +34,10 @@ cmd_default() {
   af_load_version
 
 
-  # update project version for build
   NEW_VERSION="$VERSION_A.$VERSION_B.$(($VERSION_C + 1)).0"
+
+  mssg "increment version to $NEW_VERSION ($VERSION_NAME)"
+
   af_update_version $NEW_VERSION $VERSION_NAME
   af_load_version
 
@@ -48,37 +50,59 @@ cmd_default() {
 
   # setup new nightbuild version
   NEW_VERSION=$VERSION_A.$VERSION_B.$VERSION_C.$(($VERSION_D + 1))
+
+  mssg "increment version to $NEW_VERSION ($VERSION_NAME)"
+
   af_update_version $NEW_VERSION $VERSION_NAME
 
 
-  # add untracket files
+  mssg "commit new version files to branch"
+
   git_do add -A
 
-  # commit files
-  git_do commit -a -m "### build sprintbuild $(($VERSION_C - 1))"
+  git_do commit -a -m "### update version to $NEW_VERSION"
+
 
   if has "$ORIGIN/$MASTER_BRANCH" $(git_remote_branches); then
     require_branches_equal "$MASTER_BRANCH" "$ORIGIN/$MASTER_BRANCH"
   fi
 
   if ! git_is_branch_merged_into "$SB_BRANCH" "$MASTER_BRANCH"; then
+    mssg "checkout to $MASTER_BRANCH"
+
     git_do checkout "$MASTER_BRANCH" || \
       die "Could not check out $MASTER_BRANCH."
+
+    mssg "marge from $SB_BRANCH into $MASTER_BRANCH"
 
     git_do merge --no-ff "$SB_BRANCH" -m "### marge from $SB_BRANCH into $MASTER_BRANCH" || \
       die "There were merge conflicts."
   fi
 
+  mssg "create tag '$SB_TAG'"
+
   git_do tag -a -m "### tag: $SB_TAG" "$SB_TAG" "$MASTER_BRANCH" || \
     die "Tagging failed. Please run finish again to retry."
+
+
+  mssg "push $MASTER_BRANCH to origin"
 
   git_do push origin "$MASTER_BRANCH" || \
     die "Pushing master to origin failed. Please run finish again to retry."
 
+
+  mssg "push tag '$SB_TAG' to origin"
+
   git_do push origin "$SB_TAG" || \
     die "Pushing tag to origin failed. Please run finish again to retry."
 
+
+  mssg "delete $NB_BRANCH"
+
   git_do branch -d "$SB_BRANCH"
+
+
+  mssg "done"
 }
 
 
