@@ -50,7 +50,7 @@ cmd_default() {
 
   git_do add -A
 
-  git_do commit -a -m "### build nightbuild $VERSION_C.$VERSION_D"
+  git_do commit -a -m "### update version to $NEW_VERSION"
 
 
   if has "$ORIGIN/$MASTER_BRANCH" $(git_remote_branches); then
@@ -63,7 +63,7 @@ cmd_default() {
     git_do checkout "$MASTER_BRANCH" || \
       die "Could not check out $MASTER_BRANCH."
 
-    mssg "marge from $MASTER_BRANCH into $NB_BRANCH"
+    mssg "marge from $NB_BRANCH into $MASTER_BRANCH"
 
     git_do merge --no-ff "$NB_BRANCH" -m "### marge from $NB_BRANCH into $MASTER_BRANCH" || \
       die "There were merge conflicts."
@@ -88,7 +88,7 @@ cmd_default() {
     die "Pushing tag to origin failed."
 
 
-  mssg "delete $FEATURE_BRANCH"
+  mssg "delete $NB_BRANCH"
 
   git_do branch -d "$NB_BRANCH" || \
     die "Delete branch failed."
