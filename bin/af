@@ -101,6 +101,8 @@ subcommands:
   pull                Pull current or all release/* and master branches.
   push                Push current or all release/* and master branches.
   run                 Run external specific to your project commands.
+
+  version             Print current version 
   
 EndOfMessage`
 }
