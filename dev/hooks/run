@@ -1,0 +1,32 @@
+#!/bin/bash
+
+
+cmd_rn() {
+  . "./bin/rn"
+  FLAGS_PARENT="af run rn"
+  usage_rn_init
+
+  SUBACTION="default"
+  if [ "$1" != "" ] && { ! echo "$1" | grep -q "^-"; } then
+    SUBACTION="$1"; shift
+  fi
+  if ! type "cmd_rn_$SUBACTION" >/dev/null 2>&1; then
+    warn "Unknown subcommand: '$SUBACTION'"
+    usage
+    exit 1
+  fi
+ 
+  rn_init
+  cmd_rn_$SUBACTION "$@"
+}
+
+
+usage_init() {
+  FLAGS_HELP=`cat << EndOfMessage
+USAGE: af run <subcommand>
+
+subcommands:
+  rn             working with release notes. Try 'af run rn -h' for details.
+ 
+`
+}

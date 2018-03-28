@@ -1,0 +1,33 @@
+#!/bin/bash
+
+
+#
+#
+# branch.master.mergeoptions = --no-ff
+#
+if git config --local --get branch.master.mergeoptions | grep -q 'no-ff'; then
+  echo '##  branch.master.mergeoptions=--no-ff setted'
+else
+  echo '##  set branch.master.mergeoptions=--no-ff'
+  git config --local --unset branch.master.mergeoptions
+  git config --local --add branch.master.mergeoptions '--no-ff'
+fi
+
+
+#
+#
+# auxoft-gitflow
+#
+ROOT_FOLDER=$(pwd)
+
+
+#
+#
+# symlink for af hooks
+#
+ln -s $ROOT_FOLDER/dev/hooks/run               $ROOT_FOLDER/bin/hooks/run					1> /dev/null 2> /dev/null
+ln -s $ROOT_FOLDER/dev/hooks/build             $ROOT_FOLDER/bin/hooks/build                 1> /dev/null 2> /dev/null
+ln -s $ROOT_FOLDER/dev/hooks/build-check       $ROOT_FOLDER/bin/hooks/build-check           1> /dev/null 2> /dev/null
+ln -s $ROOT_FOLDER/dev/hooks/version-get       $ROOT_FOLDER/bin/hooks/version-get           1> /dev/null 2> /dev/null
+ln -s $ROOT_FOLDER/dev/hooks/version-set       $ROOT_FOLDER/bin/hooks/version-set           1> /dev/null 2> /dev/null
+ln -s $ROOT_FOLDER/dev/hooks/apply-ignorelist  $ROOT_FOLDER/bin/hooks/apply-ignorelist      1> /dev/null 2> /dev/null
