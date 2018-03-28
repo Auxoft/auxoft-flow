@@ -1,0 +1,42 @@
+#!/bin/bash
+
+
+init() {
+  require_git_repo
+  require_af_initialized
+  af_load_settings
+  af_load_version
+}
+
+
+cmd_default() {
+  DEFINE_boolean full false 'print full version information' f
+
+  parse_args "$@"
+
+
+  if flag full; then
+    info "version: $VERSION"
+    info "version name: $VERSION_NAME"
+    info "branch: $CURRENT_BRANCH"
+    info "version type: $VERSION_TYPE"
+    info "short version: $VERSION_SHORT"
+    info "long version: $VERSION_LONG"
+  else 
+    info "current version: $VERSION ($VERSION_NAME)"
+  fi
+}
+
+
+cmd_help() {
+  usage
+  exit 0
+}
+
+
+usage_init() {
+  FLAGS_HELP=`cat << EndOfMessage
+USAGE: af version [-f] [-g] [-s] [-h]
+ 
+EndOfMessage`
+}
