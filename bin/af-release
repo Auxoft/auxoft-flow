@@ -224,7 +224,6 @@ cmd_build() {
   parse_args "$@"
 
   RELEASEBUILD_VERSION="$VERSION_A.$VERSION_B.$(($VERSION_C + 1))"
-  NEW_RELEASE_VERSION="$VERSION_A.$VERSION_B.$(($VERSION_C + 2)).1"
   NEW_RELEASE_TAG="$VERSION_A.$VERSION_B.$(($VERSION_C + 2)).0"
 
   RELEASEBUILD_BRANCH=$RELEASEBUILD_PREFIX$RELEASEBUILD_VERSION
@@ -249,6 +248,8 @@ cmd_build() {
   git_do checkout -b "$RELEASEBUILD_BRANCH"
 
 
+  mssg "set version to $RELEASEBUILD_VERSION ($VERSION_NAME)"
+
   af_update_version $RELEASEBUILD_VERSION $VERSION_NAME
   af_load_version
 
@@ -259,30 +260,36 @@ cmd_build() {
     die "There were build problem."
 
 
-  # add untracket files
-  git_do add -A
+  mssg "commit new version files to branch"
 
-  # commit files
-  git_do commit -a -m "### build release $RELEASEBUILD_VERSION"
+  git_do add -A
+  git_do commit -a -m "### update version to $RELEASEBUILD_VERSION"
+
+
+  mssg "create tag '$RELEASEBUILD_VERSION'"
 
   git_do tag -a -m "### tag: $RELEASEBUILD_VERSION" "$RELEASEBUILD_VERSION" "$RELEASE_BRANCH" || \
     die "Tagging failed. Please run finish again to retry."
 
 
-  # increment rc version
+  mssg "push tag '$RELEASEBUILD_VERSION' to origin"
+
+  git_do push origin "$RELEASEBUILD_VERSION" || \
+    die "Pushing tag to origin failed. Please run finish again to retry."
+
+
   NEW_VERSION="$VERSION_A.$VERSION_B.$(($VERSION_C + 1)).1"
+  
+  mssg "increment version to $NEW_VERSION ($VERSION_NAME)"
+
   af_update_version $NEW_VERSION $VERSION_NAME
   af_load_version
 
 
-  # update product version
-  af_update_version $NEW_RELEASE_VERSION $VERSION_NAME
+  mssg "commit new version files to branch"
 
-  # add untracket files
   git_do add -A
-
-  # commit files
-  git_do commit -a -m "### update release version: $NEW_RELEASE_VERSION"
+  git_do commit -a -m "### update release version: $NEW_VERSION"
 
 
   if has "$ORIGIN/$RELEASE_BRANCH" $(git_remote_branches); then
@@ -290,26 +297,42 @@ cmd_build() {
   fi
 
   if ! git_is_branch_merged_into "$RELEASEBUILD_BRANCH" "$RELEASE_BRANCH"; then
+    mssg "checkout to $RELEASE_BRANCH"
+
     git_do checkout "$RELEASE_BRANCH" || \
       die "Could not check out $RELEASE_BRANCH."
+
+    mssg "marge from $RELEASEBUILD_BRANCH into $RELEASE_BRANCH"
 
     git_do merge --no-ff "$RELEASEBUILD_BRANCH" -m "### marge from $RELEASEBUILD_BRANCH into $RELEASE_BRANCH" || \
       die "There were merge conflicts."
   fi
 
+
+  mssg "create tag '$NEW_RELEASE_TAG'"
+
   git_do tag -a -m "### tag: $NEW_RELEASE_TAG" "$NEW_RELEASE_TAG" "$RELEASE_BRANCH" || \
-    die "Tagging failed. Please run finish again to retry."
+    die "Tagging failed."
+
+  
+  mssg "push $RELEASE_BRANCH to origin"
 
   git_do push origin "$RELEASE_BRANCH" || \
-    die "Pushing master to origin failed. Please run finish again to retry."
+    die "Pushing master to origin failed."
 
-  git_do push origin "$RELEASEBUILD_VERSION" || \
-    die "Pushing tag to origin failed. Please run finish again to retry."
+
+  mssg "push tag '$NEW_RELEASE_TAG' to origin"
 
   git_do push origin "$NEW_RELEASE_TAG" || \
-    die "Pushing tag to origin failed. Please run finish again to retry."
+    die "Pushing tag to origin failed."
+
+
+  mssg "delete $RELEASEBUILD_BRANCH"
 
   git_do branch -d "$RELEASEBUILD_BRANCH"
+
+
+  mssg "done"
 }
 
 

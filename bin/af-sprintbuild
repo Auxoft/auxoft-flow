@@ -31,7 +31,6 @@ cmd_default() {
   mssg "create sprintbuild branch: $SB_BRANCH"
 
   git_do checkout -b "$SB_BRANCH"
-  af_load_version
 
 
   NEW_VERSION="$VERSION_A.$VERSION_B.$(($VERSION_C + 1)).0"
