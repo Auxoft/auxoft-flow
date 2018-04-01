@@ -34,7 +34,7 @@ cmd_start() {
     shift
   done
 
-  HOTFIX_BRANCH="$HOTFIX_PREFIX$HOTFIX_NAME"
+  HOTFIX_BRANCH="$HOTFIX_PREFIX$VERSION_A.$VERSION_B-$HOTFIX_NAME"
 
 
   require_current_branch_prefix $RELEASE_PREFIX
