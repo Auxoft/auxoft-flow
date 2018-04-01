@@ -139,17 +139,44 @@ cmd_finish() {
   mssg "done"
 }
 
+cmd_list() {
+  parse_args "$@"
+
+
+  local_branches=( `git_local_branches` )
+  current_branch=( `git_current_branch` )
+
+  printed="NO"
+  for branch in ${local_branches[@]}; do
+    if [[ $branch == $FEATURE_PREFIX* ]] ; then
+
+      if [[ $branch == $current_branch ]] ; then
+        clr_green "* $branch"
+      else
+        clr_blue "  $branch"
+      fi
+
+      printed="YES"
+    fi
+  done
+
+  if [[ $printed == "NO" ]] ; then
+    clr_brown "  nothing"
+  fi
+}
+
 
 usage_init() {
   FLAGS_HELP=`cat << EndOfMeesage
 USAGE: af feature start [-s] [-g] [-h] <name>
        af feature finish [-s] [-g] [-h] [-f]
-       af feature update [-s] [-g] [-h]
+       af feature list [-s] [-g] [-h]
 
 subcommans:
   start           Create feature branch (run on master branch)."
   finish          Finish feature branch (run on feature/* branch)."
- 
+  list            Print all feature branches
+
 EndOfMessage`
 }
 

@@ -335,17 +335,45 @@ cmd_build() {
   mssg "done"
 }
 
+cmd_list() {
+  parse_args "$@"
+
+
+  local_branches=( `git_local_branches` )
+  current_branch=( `git_current_branch` )
+
+  printed="NO"
+  for branch in ${local_branches[@]}; do
+    if [[ $branch == $RELEASE_PREFIX* ]] ; then
+
+      if [[ $branch == $current_branch ]] ; then
+        clr_green "* $branch"
+      else
+        clr_blue "  $branch"
+      fi
+
+      printed="YES"
+    fi
+  done
+
+  if [[ $printed == "NO" ]] ; then
+    clr_brown "  nothing"
+  fi
+}
+
 
 usage_init() {
   FLAGS_HELP=`cat << EndOfMessage
 USAGE: af release create [-s] [-g] [-h]
        af release prebuild [-s] [-g] [-h]
        af release build [-s] [-g] [-h]
+       af release list [-s] [-g] [-h]
 
 subcommans:
   create          Create release branch (run on master branch)."
   prebuild        Create rcbuild or patchbuild (run on release-*.* branch)."
   build           Create release build (run on release-*.* branch)."
+  list            Print all release branches
  
 EndOfMessage`
 }
