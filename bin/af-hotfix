@@ -34,7 +34,7 @@ cmd_start() {
     shift
   done
 
-  HOTFIX_BRANCH="$HOTFIX_PREFIX$HOTFIX_NAME"
+  HOTFIX_BRANCH="$HOTFIX_PREFIX$VERSION_A.$VERSION_B-$HOTFIX_NAME"
 
 
   require_current_branch_prefix $RELEASE_PREFIX
@@ -250,16 +250,67 @@ cmd_finish() {
   mssg "done"
 }
 
+cmd_migrate() {
+  # parse_args "$@"
+
+  # if [[ "$1" = "" ]]; then
+  #   usage
+  #   exit 1
+  # fi
+
+  # if expr "$1" : "^[0-9]\{1,\}\.[0-9]\{1,\}$" >/dev/null; then
+  #   TO_VERSION="$1"
+  # else
+  #   usage
+  #   exit 1
+  # fi
+
+  # HOTFIX_BRANCH=`git_current_branch`
+  # HOTFIX_NAME=$(echo $HOTFIX_BRANCH | cut -d'/' -f 2)
+
+
+  # FROM_RELEASE_BRANCH="$RELEASE_PREFIX$TO_VERSION"
+  # name="_$NEW_VERSION"
+  # NEW_HOTFIX_NAME="$HOTFIX_NAME$name"
+
+
+  # require_clean_working_tree
+  # require_current_branch_prefix $HOTFIX_PREFIX
+  # require_branch $FROM_RELEASE_BRANCH
+  # require_branch_absent $NEW_HOTFIX_BRANCH
+
+
+  # echo $FROM_RELEASE_BRANCH
+  # echo $HOTFIX_BRANCH
+  # echo $NEW_HOTFIX_BRANCH
+
+
+  # mssg "checkout to $RELEASE_BRANCH"
+
+  # git_do checkout "$RELEASE_BRANCH" || \
+  #   die "Could not check out $RELEASE_BRANCH."
+
+  # PATCH_FILE="./patches/hotfix_$HOTFIX_NAME.patch"
+  # APPLIED_PATCH_FILE="./patches/applied/hotfix_$HOTFIX_NAME.patch"
+
+  # git 
+  # git diff --full-index --binary $NEW_HOTFIX_BRANCH > ./test.patch
+
+
+  # mssg "done"
+}
+
 
 usage_init() {
   FLAGS_HELP=`cat << EndOfMessage
 USAGE: af hotfix start [-s] [-g] [-h] <name>
        af hotfix finish [-s] [-g] [-h] [-f] [-n] [-y]
-       af hotfix update [-s] [-g] [-h]
+       af hotfix migrate [-s] [-g] [-h] <x.y>
   
 subcommans:
-  start           Create hotfix branch (run on release-*.* branch)."
-  finish          Finish hotfix branch (run on hotfix/* branch)."
+  start           Create hotfix branch (run on release/*.* branch).
+  finish          Finish hotfix branch (run on hotfix/* branch).
+  migrate         Migrate hotfix to 'release/<x.y>' branch (run on hotfix/* branch).
  
 EndOfMessage`
 }
