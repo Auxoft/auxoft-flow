@@ -285,16 +285,23 @@ cmd_migrate() {
   # echo $NEW_HOTFIX_BRANCH
 
 
-  # mssg "checkout to $RELEASE_BRANCH"
-
-  # git_do checkout "$RELEASE_BRANCH" || \
-  #   die "Could not check out $RELEASE_BRANCH."
-
   # PATCH_FILE="./patches/hotfix_$HOTFIX_NAME.patch"
   # APPLIED_PATCH_FILE="./patches/applied/hotfix_$HOTFIX_NAME.patch"
 
-  # git 
-  # git diff --full-index --binary $NEW_HOTFIX_BRANCH > ./test.patch
+
+  
+  # run in old hotfix branch
+  # git diff --full-index --binary release/0.8 > ./patches/test2.patch
+
+
+  # git_do checkout "$NEW_RELEASE_BRANCH" || \
+  #   die "Could not check out $RELEASE_BRANCH."
+
+  # af start $NEW_HOTFIX_NAME
+
+  # git apply --whitespace=fix --reject ./patches/test2.patch
+
+  # add and commit
 
 
   mssg "done"

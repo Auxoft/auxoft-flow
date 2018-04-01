@@ -1,0 +1,166 @@
+#!/bin/bash
+
+
+init() {
+  require_git_repo
+  require_af_initialized
+  af_load_settings
+  af_load_version
+}
+
+
+print_green_branch() {
+  if [[ "$3" == "" ]] ; then
+    if [[ $1 == $2 ]] ; then
+      clr_green clr_bold "*   $1"
+    else
+      clr_green "    $1"
+    fi
+  else
+    if [[ $1 == $2 ]] ; then
+      clr_green clr_bold "*   $1 ($3)"
+    else
+      clr_green "    $1 ($3)"
+    fi
+  fi
+}
+
+print_blue_branch() {
+  if [[ "$3" == "" ]] ; then
+    if [[ $1 == $2 ]] ; then
+      clr_blue clr_bold "*   $1"
+    else
+      clr_blue "    $1"
+    fi
+  else
+    if [[ $1 == $2 ]] ; then
+      clr_blue clr_bold "*   $1 ($3)"
+    else
+      clr_blue "    $1 ($3)"
+    fi
+  fi
+}
+
+print_brown_branch() {
+  if [[ "$3" == "" ]] ; then
+    if [[ $1 == $2 ]] ; then
+      clr_magenta clr_bold "*   $1"
+    else
+      clr_magenta "    $1"
+    fi
+  else
+    if [[ $1 == $2 ]] ; then
+      clr_magenta clr_bold "*   $1 ($3)"
+    else
+      clr_magenta "    $1 ($3)"
+    fi
+  fi
+}
+
+
+cmd_default() {
+  DEFINE_boolean pretty false 'print pretty branches' p
+  DEFINE_boolean origin false 'print remote branches flag' o  
+
+  parse_args "$@"
+
+
+  current_branch=( `git_current_branch` )
+  local_branches=( `git_local_branches` )
+  remote_branches=( `git_remote_branches` )
+
+
+  # master
+  if flag pretty; then
+    clr_brown "  developer branches:"
+  fi
+  for branch in ${local_branches[@]}; do
+    if [[ $branch == $MASTER_BRANCH ]] ; then
+      if has "$ORIGIN/$branch" $(git_remote_branches) && flag origin ; then
+        print_green_branch $branch $current_branch $ORIGIN/$branch
+      else
+        print_green_branch $branch $current_branch
+      fi
+      local_branches=( "${local_branches[@]/$branch}" )
+    fi
+  done
+
+  # releases
+  if flag pretty; then
+    echo ""
+    clr_brown "  releases branches:"
+  fi
+  for branch in ${local_branches[@]}; do
+    if [[ $branch == $RELEASE_PREFIX* ]] ; then
+      if has "$ORIGIN/$branch" $(git_remote_branches) && flag origin ; then
+        print_green_branch $branch $current_branch $ORIGIN/$branch
+      else
+        print_green_branch $branch $current_branch
+      fi
+      local_branches=( "${local_branches[@]/$branch}" )
+    fi
+  done
+
+  # features
+  if flag pretty; then
+    echo ""
+    clr_brown "  features branches:"
+  fi
+  for branch in ${local_branches[@]}; do
+    if [[ $branch == $FEATURE_PREFIX* ]] ; then
+      if has "$ORIGIN/$branch" $(git_remote_branches) && flag origin ; then
+        print_green_branch $branch $current_branch $ORIGIN/$branch
+      else
+        print_green_branch $branch $current_branch
+      fi
+      local_branches=( "${local_branches[@]/$branch}" )
+    fi
+  done
+
+  # hotfixes
+  if flag pretty; then
+    echo ""
+    clr_brown "  hotfixes branches:"
+  fi
+  for branch in ${local_branches[@]}; do
+    if [[ $branch == $HOTFIX_PREFIX* ]] ; then
+      if has "$ORIGIN/$branch" $(git_remote_branches) && flag origin ; then
+        print_green_branch $branch $current_branch $ORIGIN/$branch
+      else
+        print_green_branch $branch $current_branch
+      fi
+      local_branches=( "${local_branches[@]/$branch}" )
+    fi
+  done
+
+  # others
+  if flag pretty; then
+    echo ""
+    clr_brown "  others branches:"
+  fi
+  for branch in ${local_branches[@]}; do
+    if has "$ORIGIN/$branch" $(git_remote_branches) && flag origin ; then
+      print_green_branch $branch $current_branch $ORIGIN/$branch
+    else
+      print_green_branch $branch $current_branch
+    fi
+  done
+
+  if flag pretty; then
+    echo ""
+  fi
+}
+
+
+cmd_help() {
+  usage
+  exit 0
+}
+
+
+usage_init() {
+  FLAGS_HELP=`cat << EndOfMessage
+USAGE: af list [-p] [-g] [-s] [-h]
+ 
+EndOfMessage`
+}

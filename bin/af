@@ -103,6 +103,7 @@ subcommands:
   run                 Run external specific to your project commands.
 
   version             Print current version 
+  list                Print all project branches
   
 EndOfMessage`
 }
