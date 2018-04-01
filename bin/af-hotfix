@@ -297,7 +297,33 @@ cmd_migrate() {
   # git diff --full-index --binary $NEW_HOTFIX_BRANCH > ./test.patch
 
 
-  # mssg "done"
+  mssg "done"
+}
+
+cmd_list() {
+  parse_args "$@"
+
+
+  local_branches=( `git_local_branches` )
+  current_branch=( `git_current_branch` )
+
+  printed="NO"
+  for branch in ${local_branches[@]}; do
+    if [[ $branch == $HOTFIX_PREFIX* ]] ; then
+
+      if [[ $branch == $current_branch ]] ; then
+        clr_green "* $branch"
+      else
+        clr_blue "  $branch"
+      fi
+
+      printed="YES"
+    fi
+  done
+
+  if [[ $printed == "NO" ]] ; then
+    clr_brown "  nothing"
+  fi
 }
 
 
@@ -306,11 +332,13 @@ usage_init() {
 USAGE: af hotfix start [-s] [-g] [-h] <name>
        af hotfix finish [-s] [-g] [-h] [-f] [-n] [-y]
        af hotfix migrate [-s] [-g] [-h] <x.y>
+       af hotfix list [-s] [-g] [-h]
   
 subcommans:
   start           Create hotfix branch (run on release/*.* branch).
   finish          Finish hotfix branch (run on hotfix/* branch).
   migrate         Migrate hotfix to 'release/<x.y>' branch (run on hotfix/* branch).
+  list            Print all hotfix branches
  
 EndOfMessage`
 }
