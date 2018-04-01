@@ -109,9 +109,9 @@ cmd_default() {
   for branch in ${local_branches[@]}; do
     if [[ $branch == $FEATURE_PREFIX* ]] ; then
       if has "$ORIGIN/$branch" $(git_remote_branches) && flag origin ; then
-        print_green_branch $branch $current_branch $ORIGIN/$branch
+        print_blue_branch $branch $current_branch $ORIGIN/$branch
       else
-        print_green_branch $branch $current_branch
+        print_blue_branch $branch $current_branch
       fi
       local_branches=( "${local_branches[@]/$branch}" )
     fi
@@ -125,9 +125,9 @@ cmd_default() {
   for branch in ${local_branches[@]}; do
     if [[ $branch == $HOTFIX_PREFIX* ]] ; then
       if has "$ORIGIN/$branch" $(git_remote_branches) && flag origin ; then
-        print_green_branch $branch $current_branch $ORIGIN/$branch
+        print_blue_branch $branch $current_branch $ORIGIN/$branch
       else
-        print_green_branch $branch $current_branch
+        print_blue_branch $branch $current_branch
       fi
       local_branches=( "${local_branches[@]/$branch}" )
     fi
@@ -140,9 +140,9 @@ cmd_default() {
   fi
   for branch in ${local_branches[@]}; do
     if has "$ORIGIN/$branch" $(git_remote_branches) && flag origin ; then
-      print_green_branch $branch $current_branch $ORIGIN/$branch
+      print_brown_branch $branch $current_branch $ORIGIN/$branch
     else
-      print_green_branch $branch $current_branch
+      print_brown_branch $branch $current_branch
     fi
   done
 
