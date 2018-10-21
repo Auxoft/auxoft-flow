@@ -54,8 +54,8 @@ cmd_start() {
 
 cmd_finish() {
   DEFINE_boolean force false 'force finish hotfix without check build' f
-  DEFINE_boolean nomaster false 'finish hotfix without create patch to master' n
-  DEFINE_boolean yesall false 'finish hotfix with auto create and apply patch to master' y
+  # DEFINE_boolean nomaster false 'finish hotfix without create patch to master' n
+  # DEFINE_boolean yesall false 'finish hotfix with auto create and apply patch to master' y
   
   parse_args "$@"
 
@@ -143,108 +143,108 @@ cmd_finish() {
   git_do branch -D "$HOTFIX_BRANCH"
 
 
-  if ! flag nomaster; then
+  # if ! flag nomaster; then
 
-    mkdir -p ./patches/applied 1> /dev/null 2> /dev/null
+  #   mkdir -p ./patches/applied 1> /dev/null 2> /dev/null
 
-    PATCH_FILE="./patches/hotfix_$HOTFIX_NAME.patch"
-    APPLIED_PATCH_FILE="./patches/applied/hotfix_$HOTFIX_NAME.patch"
-
-
-    mssg "checkout to $MASTER_BRANCH"
-
-    git_do checkout "$MASTER_BRANCH" || \
-      die "Could not check out $MASTER_BRANCH."
+  #   PATCH_FILE="./patches/hotfix_$HOTFIX_NAME.patch"
+  #   APPLIED_PATCH_FILE="./patches/applied/hotfix_$HOTFIX_NAME.patch"
 
 
-    mssg "pull from origin/$MASTER_BRANCH into $MASTER_BRANCH"
+  #   mssg "checkout to $MASTER_BRANCH"
 
-    git_do fetch origin
-    git_do pull origin
-
-
-    mssg "checkout to $RELEASE_BRANCH"
-
-    git_do checkout "$RELEASE_BRANCH" || \
-      die "Could not check out $RELEASE_BRANCH."
+  #   git_do checkout "$MASTER_BRANCH" || \
+  #     die "Could not check out $MASTER_BRANCH."
 
 
-    mssg "create patch file $PATCH_FILE between $HOTFIX_BRANCH and $RELEASE_BRANCH"
+  #   mssg "pull from origin/$MASTER_BRANCH into $MASTER_BRANCH"
 
-    git diff --full-index --binary "$MASTER_BRANCH" > "$PATCH_FILE" || \
-      die "Could not create patch."
-
-
-    if flag yesall  ||  question_Yn "Do you apply '$PATCH_FILE' to '$PATCH_FEATURE_NAME' branch?"; then
-      mssg "checkout to $MASTER_BRANCH"
-
-      git_do checkout "$MASTER_BRANCH" || \
-        die "Could not check out $MASTER_BRANCH."
+  #   git_do fetch origin
+  #   git_do pull origin
 
 
-      mssg "start feature $PATCH_FEATURE_NAME"
+  #   mssg "checkout to $RELEASE_BRANCH"
 
-      $AF_DIR/af -s feature start "$PATCH_FEATURE_NAME" || \
-        die "Could not start feature $PATCH_FEATURE_NAME."
-
-
-      mssg "apply path $PATCH_FILE to $FEATURE_PREFIX$PATCH_FEATURE_NAME"
-
-      APPLIED_PATCH=1
-      git_do apply --whitespace=fix --reject "$PATCH_FILE" || \
-        while true; do
-          warn "Could not apply path $PATCH_FILE to $PATCH_FEATURE_BRANCH"
-          APPLIED_PATCH=0
-          echo " * please manual apply $PATCH_FILE file to branches"
-          break
-        done
+  #   git_do checkout "$RELEASE_BRANCH" || \
+  #     die "Could not check out $RELEASE_BRANCH."
 
 
-      if [[ "$APPLIED_PATCH" = "1" ]]; then
-        mv "$PATCH_FILE" "$APPLIED_PATCH_FILE"
+  #   mssg "create patch file $PATCH_FILE between $HOTFIX_BRANCH and $RELEASE_BRANCH"
+
+  #   git diff --full-index --binary "$MASTER_BRANCH" > "$PATCH_FILE" || \
+  #     die "Could not create patch."
 
 
-        mssg "discard ignored to apply files"
+  #   if flag yesall  ||  question_Yn "Do you apply '$PATCH_FILE' to '$PATCH_FEATURE_NAME' branch?"; then
+  #     mssg "checkout to $MASTER_BRANCH"
 
-        for ignorefile in $( $AF_DIR/hooks/apply-ignorelist ); do
-            echo $ignorefile
-            git_do checkout $ignorefile
-        done
-
-
-        mssg "update version"
-
-        af_load_version
-        af_update_version $VERSION $VERSION_NAME
+  #     git_do checkout "$MASTER_BRANCH" || \
+  #       die "Could not check out $MASTER_BRANCH."
 
 
-        if flag yesall  ||  question_Yn "Do you finish feature '$PATCH_FEATURE_NAME'?"; then
-          mssg "commit applied files"
+  #     mssg "start feature $PATCH_FEATURE_NAME"
 
-          git_do add -A
-          git_do commit -a -m "### apply patch $APPLIED_PATCH_FILE"
-
-          $AF_DIR/af -s feature finish || \
-            die "Could not finish feature $PATCH_FEATURE_NAME."
+  #     $AF_DIR/af -s feature start "$PATCH_FEATURE_NAME" || \
+  #       die "Could not start feature $PATCH_FEATURE_NAME."
 
 
-          mssg "checkout to $RELEASE_BRANCH"
+  #     mssg "apply path $PATCH_FILE to $FEATURE_PREFIX$PATCH_FEATURE_NAME"
 
-          git_do checkout "$RELEASE_BRANCH" || \
-            die "Could not check out $RELEASE_BRANCH."
+  #     APPLIED_PATCH=1
+  #     git_do apply --whitespace=fix --reject "$PATCH_FILE" || \
+  #       while true; do
+  #         warn "Could not apply path $PATCH_FILE to $PATCH_FEATURE_BRANCH"
+  #         APPLIED_PATCH=0
+  #         echo " * please manual apply $PATCH_FILE file to branches"
+  #         break
+  #       done
+
+
+  #     if [[ "$APPLIED_PATCH" = "1" ]]; then
+  #       mv "$PATCH_FILE" "$APPLIED_PATCH_FILE"
+
+
+  #       mssg "discard ignored to apply files"
+
+  #       for ignorefile in $( $AF_DIR/hooks/apply-ignorelist ); do
+  #           echo $ignorefile
+  #           git_do checkout $ignorefile
+  #       done
+
+
+  #       mssg "update version"
+
+  #       af_load_version
+  #       af_update_version $VERSION $VERSION_NAME
+
+
+  #       if flag yesall  ||  question_Yn "Do you finish feature '$PATCH_FEATURE_NAME'?"; then
+  #         mssg "commit applied files"
+
+  #         git_do add -A
+  #         git_do commit -a -m "### apply patch $APPLIED_PATCH_FILE"
+
+  #         $AF_DIR/af -s feature finish || \
+  #           die "Could not finish feature $PATCH_FEATURE_NAME."
+
+
+  #         mssg "checkout to $RELEASE_BRANCH"
+
+  #         git_do checkout "$RELEASE_BRANCH" || \
+  #           die "Could not check out $RELEASE_BRANCH."
             
-        fi
+  #       fi
 
-        if flag yesall  ||  question_Yn "Do you remove '$APPLIED_PATCH_FILE' file?"; then
-          mssg "remove patch file $APPLIED_PATCH_FILE"
+  #       if flag yesall  ||  question_Yn "Do you remove '$APPLIED_PATCH_FILE' file?"; then
+  #         mssg "remove patch file $APPLIED_PATCH_FILE"
 
-          rm -r $APPLIED_PATCH_FILE 1> /dev/null 2> /dev/null
-        fi
-      fi
-    else
-      warn "please manual apply $PATCH_FILE file to branches"
-    fi
-  fi
+  #         rm -r $APPLIED_PATCH_FILE 1> /dev/null 2> /dev/null
+  #       fi
+  #     fi
+  #   else
+  #     warn "please manual apply $PATCH_FILE file to branches"
+  #   fi
+  # fi
 
 
   mssg "done"
@@ -337,7 +337,7 @@ cmd_list() {
 usage_init() {
   FLAGS_HELP=`cat << EndOfMessage
 USAGE: af hotfix start [-s] [-g] [-h] <name>
-       af hotfix finish [-s] [-g] [-h] [-f] [-n] [-y]
+       af hotfix finish [-s] [-g] [-h] [-f]
        af hotfix migrate [-s] [-g] [-h] <x.y>
        af hotfix list [-s] [-g] [-h]
   
