@@ -97,17 +97,28 @@ cmd_create() {
   question_short_version MASTER_VERSION "new master version" "$MASTER_VERSION"
   question_version_name MASTER_NAME "new master version name (_ for empty)" "$MASTER_NAME"
 
-  NEW_MASTER_VERSION="$MASTER_VERSION.$(($SPRINT_NUMBER + 1)).1"
+  MASTER_TAG="$MASTER_VERSION.$(($SPRINT_NUMBER + 1)).0"
+
+  mssg "create tag '$MASTER_TAG'"
+
+  git_do tag -a -m "### tag: $MASTER_TAG" "$MASTER_TAG" "$MASTER_BRANCH" || \
+    die "Tagging failed. Please run finish again to retry."
+
+  mssg "push tag '$MASTER_TAG' to origin"
+
+  git_do push origin "$MASTER_TAG" || \
+    die "Pushing tag to origin failed. Please run finish again to retry."
 
 
   ./af feature start update version
 
 
+  NEW_MASTER_VERSION="$MASTER_VERSION.$(($SPRINT_NUMBER + 1)).1"
+
   mssg "set new dev version in master branch: $NEW_MASTER_VERSION ($MASTER_NAME)"
 
   af_update_version $NEW_MASTER_VERSION $MASTER_NAME
   af_load_version
-
 
   mssg "commit new version files to branch"
 
