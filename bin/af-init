@@ -3,7 +3,7 @@
 
 cmd_default() {
   DEFINE_boolean force false 'force setting of af branches, even if already configured' f
-  DEFINE_string version '0.0.0.0' 'set version to initial (a.b.c.d)' v
+  DEFINE_string version '0.0.1.0' 'set version to initial (a.b.c.d)' v
   DEFINE_string name '' 'set version name to initial' n
 
   parse_args "$@"
@@ -24,6 +24,11 @@ cmd_default() {
 
   mssg "add config values to git local config"
 
+  #
+  # force set branch.master.mergeoptions to --no-ff
+  git config --local --unset branch.master.mergeoptions
+  git config --local --add branch.master.mergeoptions '--no-ff'
+  #
   # version
   git config --local --remove-section auxoft.core 1> /dev/null 2> /dev/null
   git config --local --add auxoft.core.version 0.0.2
