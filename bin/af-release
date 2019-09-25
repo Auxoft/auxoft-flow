@@ -67,7 +67,7 @@ cmd_create() {
   git_do commit -a -m "### set release version: $NEW_VERSION"
 
   
-  ./af hotfix finish -f -n
+  ./af hotfix finish -f
 
 
   mssg "create tag '$RELEASE_TAG'"
