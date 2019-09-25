@@ -1,0 +1,6 @@
+#!/bin/bash
+
+
+echo $1 > "./current.version"
+echo $2 >> "./current.version"
+echo "" >> "./current.version"

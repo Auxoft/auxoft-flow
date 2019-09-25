@@ -1,0 +1,7 @@
+#!/bin/bash
+
+
+declare -a versions
+versions=( `cat "./current.version"`)
+
+echo ${versions[0]} ${versions[1]}

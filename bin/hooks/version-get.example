@@ -11,11 +11,3 @@
 #
 #
 #  file name: version-get
-
-
-if [ ! -e "./current.version" ]; then
-  echo "0.0.0.0"     >  ./current.version
-  echo ""            >> ./current.version
-fi
-
-echo `cat "./current.version"`

@@ -35,7 +35,7 @@ cmd_default() {
 
   mssg "building"
 
-  $AF_DIR/hooks/build "$VERSION_SHORT" "$VERSION_NAME" "$VERSION_TYPE" "$VERSION_LONG" || \
+  af_run_hook_file build "$VERSION_SHORT" "$VERSION_NAME" "$VERSION_TYPE" "$VERSION_LONG" || \
     die "There were build problem."
 
 

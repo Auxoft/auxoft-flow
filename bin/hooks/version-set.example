@@ -10,15 +10,3 @@
 #
 #
 #  file name: version-set
-
-
-. ./bin/bash_colors/bash_colors.sh
-
-
-clr_cyan " > set version"
-clr_cyan "`echo " >  $0 $@"`"
-
-echo $1 > "./current.version"
-echo $2 >> "./current.version"
-
-clr_cyan " > done"
