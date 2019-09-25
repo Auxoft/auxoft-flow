@@ -75,7 +75,7 @@ cmd_finish() {
   if ! flag force; then
     mssg "checking build"
 
-    $AF_DIR/hooks/build-check "$VERSION_SHORT" "$VERSION_NAME" "$VERSION_TYPE" "$VERSION_LONG" || \
+    af_run_hook_file build-check "$VERSION_SHORT" "$VERSION_NAME" "$VERSION_TYPE" "$VERSION_LONG" || \
       die "There were check build problem."
   fi
 
@@ -107,7 +107,7 @@ cmd_finish() {
   if ! flag force; then
     mssg "checking build"
 
-    $AF_DIR/hooks/build-check "$VERSION_SHORT" "$VERSION_NAME" "$VERSION_TYPE" "$VERSION_LONG" || \
+    af_run_hook_file build-check "$VERSION_SHORT" "$VERSION_NAME" "$VERSION_TYPE" "$VERSION_LONG" || \
       die "There were check build problem."
   fi
 

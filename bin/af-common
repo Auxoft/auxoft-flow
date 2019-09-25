@@ -224,6 +224,18 @@ git_is_branch_merged_into() {
 # Auxoft flow specific common functionality
 #
 
+af_run_hook_file() {
+  local AF_DIR=$(dirname $0)
+  local HOOK=$1;
+  shift
+
+  if [ -e "$AF_DIR/hooks/$HOOK" ]; then
+    $AF_DIR/hooks/$HOOK $@
+  else
+    $AF_DIR/hooks-defaults/$HOOK $@
+  fi
+}
+
 # check if this repo has been inited for Auxoft Flow
 af_has_version_configured() {
   git config --get auxoft.core.version >/dev/null 2>&1
@@ -270,7 +282,7 @@ af_load_version() {
   AF_DIR=$(dirname $0)
 
   declare -a versions
-  versions=( `$AF_DIR/hooks/version-get` )
+  versions=( `af_run_hook_file version-get` )
 
   export VERSION=${versions[0]}
   export VERSION_NAME=${versions[1]}
@@ -351,7 +363,7 @@ af_load_version() {
 }
 
 af_update_version() {
-  $AF_DIR/hooks/version-set $@
+  af_run_hook_file version-set $@
 }
 
 #

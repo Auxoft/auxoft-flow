@@ -18,13 +18,3 @@
 #
 #
 #  file name: build
-
-
-. ./bin/bash_colors/bash_colors.sh
-
-
-clr_cyan " > building project"
-clr_cyan "`echo " >  $0 $@"`"
-clr_cyan " > done"
-
-exit 0
