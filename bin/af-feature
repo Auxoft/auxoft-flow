@@ -53,8 +53,6 @@ cmd_start() {
 
 
 cmd_finish() {
-  DEFINE_boolean force false 'force finish feature without check build' f
-  
   parse_args "$@"
 
   FEATURE_BRANCH=`git_current_branch`
@@ -69,14 +67,6 @@ cmd_finish() {
 
   if git_is_branch_merged_into "$FEATURE_BRANCH" "$MASTER_BRANCH"; then
     die "There were merge conflicts from $FEATURE_BRANCH into $MASTER_BRANCH."
-  fi
-
-
-  if ! flag force; then
-    mssg "checking build"
-
-    $AF_DIR/hooks/build-check "$VERSION_SHORT" "$VERSION_NAME" "$VERSION_TYPE" "$VERSION_LONG" || \
-      die "There were check build problem."
   fi
 
 
@@ -104,14 +94,6 @@ cmd_finish() {
     die "There were merge conflicts."
 
     
-  if ! flag force; then
-    mssg "checking build"
-
-    $AF_DIR/hooks/build-check "$VERSION_SHORT" "$VERSION_NAME" "$VERSION_TYPE" "$VERSION_LONG" || \
-      die "There were check build problem."
-  fi
-
-
   mssg "checkout to $MASTER_BRANCH"
 
   git_do checkout "$MASTER_BRANCH" || \
@@ -142,7 +124,6 @@ cmd_finish() {
 cmd_list() {
   parse_args "$@"
 
-
   local_branches=( `git_local_branches` )
   current_branch=( `git_current_branch` )
 
@@ -169,7 +150,7 @@ cmd_list() {
 usage_init() {
   FLAGS_HELP=`cat << EndOfMeesage
 USAGE: af feature start [-s] [-g] [-h] <name>
-       af feature finish [-s] [-g] [-h] [-f]
+       af feature finish [-s] [-g] [-h]
        af feature list [-s] [-g] [-h]
 
 subcommans:

@@ -16,14 +16,11 @@ cmd_default() {
 
 
   if flag full; then
-    info "version: $VERSION"
-    info "version name: $VERSION_NAME"
     info "branch: $CURRENT_BRANCH"
-    info "version type: $VERSION_TYPE"
     info "short version: $VERSION_SHORT"
-    info "long version: $VERSION_LONG"
+    info "version: $VERSION"
   else 
-    info "current version: $VERSION ($VERSION_NAME)"
+    info "current version: $VERSION_SHORT ($VERSION)"
   fi
 }
 

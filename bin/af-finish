@@ -29,7 +29,7 @@ cmd_help() {
 
 usage_init() {
   FLAGS_HELP=`cat << EndOfMessage
-USAGE: af finish [-g] [-s] [-h] [-f] [-n] [-y]
+USAGE: af finish [-g] [-s] [-h]
  
 EndOfMessage`
 }

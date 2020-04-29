@@ -92,7 +92,7 @@ cmd_help() {
 
 usage_init() {
   FLAGS_HELP=`cat << EndOfMessage
-USAGE: af pull [-g] [-s] [-h] [-f] [-a] [-A]
+USAGE: af pull [-g] [-s] [-h] [-a] [-A]
  
 EndOfMessage`
 }

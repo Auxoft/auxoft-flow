@@ -53,10 +53,6 @@ cmd_start() {
 
 
 cmd_finish() {
-  DEFINE_boolean force false 'force finish hotfix without check build' f
-  # DEFINE_boolean nomaster false 'finish hotfix without create patch to master' n
-  # DEFINE_boolean yesall false 'finish hotfix with auto create and apply patch to master' y
-  
   parse_args "$@"
 
   HOTFIX_BRANCH=`git_current_branch`
@@ -79,14 +75,6 @@ cmd_finish() {
     die "There were merge conflicts from $HOTFIX_BRANCH into $MASTER_BRANCH."
   fi
 
-
-  if ! flag force; then
-    mssg "checking build"
-
-    $AF_DIR/hooks/build-check "$VERSION_SHORT" "$VERSION_NAME" "$VERSION_TYPE" "$VERSION_LONG" || \
-      die "There were check build problem."
-  fi
-  
 
   mssg "checkout to $RELEASE_BRANCH"
 
@@ -112,14 +100,6 @@ cmd_finish() {
     die "There were merge conflicts."
 
 
-  if ! flag force; then
-    mssg "checking build"
-
-    $AF_DIR/hooks/build-check "$VERSION_SHORT" "$VERSION_NAME" "$VERSION_TYPE" "$VERSION_LONG" || \
-      die "There were check build problem."
-  fi
-
-
   mssg "checkout to $RELEASE_BRANCH"
 
   git_do checkout "$RELEASE_BRANCH" || \
@@ -143,165 +123,7 @@ cmd_finish() {
   git_do branch -D "$HOTFIX_BRANCH"
 
 
-  # if ! flag nomaster; then
-
-  #   mkdir -p ./patches/applied 1> /dev/null 2> /dev/null
-
-  #   PATCH_FILE="./patches/hotfix_$HOTFIX_NAME.patch"
-  #   APPLIED_PATCH_FILE="./patches/applied/hotfix_$HOTFIX_NAME.patch"
-
-
-  #   mssg "checkout to $MASTER_BRANCH"
-
-  #   git_do checkout "$MASTER_BRANCH" || \
-  #     die "Could not check out $MASTER_BRANCH."
-
-
-  #   mssg "pull from origin/$MASTER_BRANCH into $MASTER_BRANCH"
-
-  #   git_do fetch origin
-  #   git_do pull origin
-
-
-  #   mssg "checkout to $RELEASE_BRANCH"
-
-  #   git_do checkout "$RELEASE_BRANCH" || \
-  #     die "Could not check out $RELEASE_BRANCH."
-
-
-  #   mssg "create patch file $PATCH_FILE between $HOTFIX_BRANCH and $RELEASE_BRANCH"
-
-  #   git diff --full-index --binary "$MASTER_BRANCH" > "$PATCH_FILE" || \
-  #     die "Could not create patch."
-
-
-  #   if flag yesall  ||  question_Yn "Do you apply '$PATCH_FILE' to '$PATCH_FEATURE_NAME' branch?"; then
-  #     mssg "checkout to $MASTER_BRANCH"
-
-  #     git_do checkout "$MASTER_BRANCH" || \
-  #       die "Could not check out $MASTER_BRANCH."
-
-
-  #     mssg "start feature $PATCH_FEATURE_NAME"
-
-  #     $AF_DIR/af -s feature start "$PATCH_FEATURE_NAME" || \
-  #       die "Could not start feature $PATCH_FEATURE_NAME."
-
-
-  #     mssg "apply path $PATCH_FILE to $FEATURE_PREFIX$PATCH_FEATURE_NAME"
-
-  #     APPLIED_PATCH=1
-  #     git_do apply --whitespace=fix --reject "$PATCH_FILE" || \
-  #       while true; do
-  #         warn "Could not apply path $PATCH_FILE to $PATCH_FEATURE_BRANCH"
-  #         APPLIED_PATCH=0
-  #         echo " * please manual apply $PATCH_FILE file to branches"
-  #         break
-  #       done
-
-
-  #     if [[ "$APPLIED_PATCH" = "1" ]]; then
-  #       mv "$PATCH_FILE" "$APPLIED_PATCH_FILE"
-
-
-  #       mssg "discard ignored to apply files"
-
-  #       for ignorefile in $( $AF_DIR/hooks/apply-ignorelist ); do
-  #           echo $ignorefile
-  #           git_do checkout $ignorefile
-  #       done
-
-
-  #       mssg "update version"
-
-  #       af_load_version
-  #       af_update_version $VERSION $VERSION_NAME
-
-
-  #       if flag yesall  ||  question_Yn "Do you finish feature '$PATCH_FEATURE_NAME'?"; then
-  #         mssg "commit applied files"
-
-  #         git_do add -A
-  #         git_do commit -a -m "### apply patch $APPLIED_PATCH_FILE"
-
-  #         $AF_DIR/af -s feature finish || \
-  #           die "Could not finish feature $PATCH_FEATURE_NAME."
-
-
-  #         mssg "checkout to $RELEASE_BRANCH"
-
-  #         git_do checkout "$RELEASE_BRANCH" || \
-  #           die "Could not check out $RELEASE_BRANCH."
-            
-  #       fi
-
-  #       if flag yesall  ||  question_Yn "Do you remove '$APPLIED_PATCH_FILE' file?"; then
-  #         mssg "remove patch file $APPLIED_PATCH_FILE"
-
-  #         rm -r $APPLIED_PATCH_FILE 1> /dev/null 2> /dev/null
-  #       fi
-  #     fi
-  #   else
-  #     warn "please manual apply $PATCH_FILE file to branches"
-  #   fi
-  # fi
-
-
-  mssg "done"
-}
-
-cmd_migrate() {
-  # parse_args "$@"
-
-  # if [[ "$1" = "" ]]; then
-  #   usage
-  #   exit 1
-  # fi
-
-  # if expr "$1" : "^[0-9]\{1,\}\.[0-9]\{1,\}$" >/dev/null; then
-  #   TO_VERSION="$1"
-  # else
-  #   usage
-  #   exit 1
-  # fi
-
-  # HOTFIX_BRANCH=`git_current_branch`
-  # HOTFIX_NAME=$(echo $HOTFIX_BRANCH | cut -d'/' -f 2)
-
-
-  # FROM_RELEASE_BRANCH="$RELEASE_PREFIX$TO_VERSION"
-  # name="_$NEW_VERSION"
-  # NEW_HOTFIX_NAME="$HOTFIX_NAME$name"
-
-
-  # require_clean_working_tree
-  # require_current_branch_prefix $HOTFIX_PREFIX
-  # require_branch $FROM_RELEASE_BRANCH
-  # require_branch_absent $NEW_HOTFIX_BRANCH
-
-
-  # echo $FROM_RELEASE_BRANCH
-  # echo $HOTFIX_BRANCH
-  # echo $NEW_HOTFIX_BRANCH
-
-
-  # PATCH_FILE="./patches/hotfix_$HOTFIX_NAME.patch"
-  # APPLIED_PATCH_FILE="./patches/applied/hotfix_$HOTFIX_NAME.patch"
-
-
-  
-  # run in old hotfix branch
-  # git diff --full-index --binary release/0.8 > ./patches/test2.patch
-
-
-  # git_do checkout "$NEW_RELEASE_BRANCH" || \
-  #   die "Could not check out $RELEASE_BRANCH."
-
-  # af start $NEW_HOTFIX_NAME
-
-  # git apply --whitespace=fix --reject ./patches/test2.patch
-
-  # add and commit
+  #TODO: add cherry pick from release to master
 
 
   mssg "done"
@@ -309,7 +131,6 @@ cmd_migrate() {
 
 cmd_list() {
   parse_args "$@"
-
 
   local_branches=( `git_local_branches` )
   current_branch=( `git_current_branch` )
@@ -337,8 +158,7 @@ cmd_list() {
 usage_init() {
   FLAGS_HELP=`cat << EndOfMessage
 USAGE: af hotfix start [-s] [-g] [-h] <name>
-       af hotfix finish [-s] [-g] [-h] [-f]
-       af hotfix migrate [-s] [-g] [-h] <x.y>
+       af hotfix finish [-s] [-g] [-h]
        af hotfix list [-s] [-g] [-h]
   
 subcommans:

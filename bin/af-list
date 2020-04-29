@@ -160,7 +160,7 @@ cmd_help() {
 
 usage_init() {
   FLAGS_HELP=`cat << EndOfMessage
-USAGE: af list [-p] [-g] [-s] [-h]
+USAGE: af list [-g] [-s] [-p] [-o] [-h]
  
 EndOfMessage`
 }

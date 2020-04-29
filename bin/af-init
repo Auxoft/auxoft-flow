@@ -26,22 +26,19 @@ cmd_default() {
 
   # version
   git config --local --remove-section auxoft.core 1> /dev/null 2> /dev/null
-  git config --local --add auxoft.core.version 0.0.2
+  git config --local --add auxoft.core.version 0.0.3
   #
   # branch
   git config --local --remove-section auxoft.branch 1> /dev/null 2> /dev/null
   git config --local --add auxoft.branch.master master
+  git config --local --add auxoft.branch.release release
   #
   # prifix
   git config --local --remove-section auxoft.prefix 1> /dev/null 2> /dev/null
   git config --local --add auxoft.prefix.feature feature/
   git config --local --add auxoft.prefix.hotfix hotfix/
-  git config --local --add auxoft.prefix.release release/
-  git config --local --add auxoft.prefix.nightbuild nightbuild/
-  git config --local --add auxoft.prefix.sprintbuild sprintbuild/
-  git config --local --add auxoft.prefix.rcbuild rcbuild/
-  git config --local --add auxoft.prefix.patchbuild patchbuild/
-  git config --local --add auxoft.prefix.releasebuild releasebuild/
+  git config --local --add auxoft.prefix.dbuild dbuild/
+  git config --local --add auxoft.prefix.rbuild rbuild/
 
   # git hooks
   #
